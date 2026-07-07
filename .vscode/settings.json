@@ -1,0 +1,18 @@
+{
+    "git.autofetch": true,
+    "files.autoSave": "afterDelay",
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "explorer.confirmDragAndDrop": false,
+    "workbench.iconTheme": "symbols",
+    "editor.fontFamily": "JetBrains Mono",
+    "editor.fontSize": 14,
+    "editor.lineHeight": 1.6,
+    "workbench.startupEditor": "newUntitledFile",
+    "editor.renderLineHighlight": "gutter",
+    "explorer.compactFolders": false,
+    "editor.semanticHighlighting.enabled": false,
+    "claudeCode.preferredLocation": "panel",
+    "workbench.colorTheme": "Liqube Dark Code",
+    "workbench.browser.openLocalhostLinks": false,
+}
