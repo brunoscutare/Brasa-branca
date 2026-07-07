@@ -5,17 +5,14 @@ const HomePage = lazy(() => import('./pages/HomePage'))
 
 function App() {
   return (
-
-    <Route
-      path="/HomePage"
-      element={
-        < BrowserRouter >
-          <Routes>
-            <HomePage />
-          </Routes>
-        </BrowserRouter >
-      }
-    />
+    <Routes>
+      <Route
+        path="/HomePage"
+        element={
+          <HomePage />
+        }
+      />
+    </Routes>
   );
 }
 
