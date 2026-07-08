@@ -1,5 +1,5 @@
 export default function HomePage(){
     return (
-        <p>oi bruno</p>
+        <p>voce entrou</p>
     )
 }
