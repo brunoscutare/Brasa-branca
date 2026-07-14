@@ -1,16 +1,22 @@
 import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
+const USER_KEY = "brasaBranca:user";
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(() => {
+        const storedUser = localStorage.getItem(USER_KEY);
+        return storedUser ? JSON.parse(storedUser) : null;
+    });
 
     const login = (usuario) => {
         setUser(usuario);
+        localStorage.setItem(USER_KEY, JSON.stringify(usuario));
     };
 
     const logout = () => {
         setUser(null);
+        localStorage.removeItem(USER_KEY);
     };
 
     return (
