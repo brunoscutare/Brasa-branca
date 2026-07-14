@@ -32,6 +32,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/cardapio" element={<Navigate to="/homepage" replace />} />
         <Route
           path="/login"
           element={
