@@ -26,31 +26,24 @@ export default function Topbar() {
 
     const isAdmin = user?.superadmin || user?.funcao === "administrador";
 
-    const adminMenus = [
+    const menus = [
         { icon: <House size={20} />, text: "Início" },
-        { icon: <NotebookText size={20} />, text: "Pedidos" },
-        { icon: <Package size={20} />, text: "Produtos" },
+        ...(isAdmin ? [{ icon: <NotebookText size={20} />, text: "Pedidos" }] : []),
         { icon: <UtensilsCrossed size={20} />, text: "Cardápio" },
-        { icon: <Users size={20} />, text: "Clientes" },
-        { icon: <Star size={20} />, text: "Avaliações" },
-        { icon: <BadgeDollarSign size={20} />, text: "Financeiro" },
-        { icon: <UserCog size={20} />, text: "Funcionários" },
+        ...(!isAdmin ? [
+            { icon: <ShoppingCart size={20} />, text: "Meu carrinho" },
+            { icon: <Heart size={20} />, text: "Favoritos" },
+            { icon: <BadgeDollarSign size={20} />, text: "Pagamentos" }
+        ] : []),
+        ...(isAdmin ? [
+            { icon: <Users size={20} />, text: "Clientes" },
+            { icon: <Star size={20} />, text: "Avaliações" },
+            { icon: <BadgeDollarSign size={20} />, text: "Financeiro" },
+            { icon: <UserCog size={20} />, text: "Funcionários" }
+        ] : []),
         { icon: <CircleUserRound size={20} />, text: "Perfil" },
         { icon: <Settings size={20} />, text: "Configurações" }
     ];
-
-    const clientMenus = [
-        { icon: <House size={20} />, text: "Início" },
-        { icon: <ShoppingBag size={20} />, text: "Cardápio" },
-        { icon: <ShoppingCart size={20} />, text: "Meu carrinho" },
-        { icon: <ClipboardList size={20} />, text: "Pedidos" },
-        { icon: <Heart size={20} />, text: "Favoritos" },
-        { icon: <BadgeDollarSign size={20} />, text: "Pagamentos" },
-        { icon: <Settings size={20} />, text: "Configurações" },
-        { icon: <CircleUserRound size={20} />, text: "Perfil" }
-    ];
-
-    const menus = isAdmin ? adminMenus : clientMenus;
 
     const getBarWidth = (isExpanded, itemCount) => {
         const iconSlot = isExpanded ? 126 : 70;
