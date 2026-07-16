@@ -15,7 +15,8 @@ import {
     ShoppingCart,
     ClipboardList,
     Heart,
-    LogOut
+    LogOut,
+    LogIn
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -31,9 +32,9 @@ export default function Topbar() {
     const menus = [
         { icon: <House size={20} />, text: "Início", sectionId: "inicio" },
         { icon: <UtensilsCrossed size={20} />, text: "Cardápio", sectionId: "cardapio" },
-        ...(!isAdmin ? [
-            { icon: <ShoppingCart size={20} />, text: "Meu carrinho", path: "/carrinho" },
-            { icon: <Heart size={20} />, text: "Favoritos", path: "/favoritos" },
+        { icon: <ShoppingCart size={20} />, text: "Meu carrinho", path: "/carrinho" },
+        { icon: <Heart size={20} />, text: "Favoritos", path: "/favoritos" },
+        ...(user ? [
             { icon: <BadgeDollarSign size={20} />, text: "Pagamentos", path: "/pagamentos" },
             { icon: <NotebookText size={20} />, text: "Pedidos", path: "/pedidos" }
         ] : []),
@@ -43,8 +44,10 @@ export default function Topbar() {
             { icon: <BadgeDollarSign size={20} />, text: "Financeiro", path: "/financeiro" },
             { icon: <UserCog size={20} />, text: "Funcionários", path: "/funcionarios" }
         ] : []),
-        { icon: <CircleUserRound size={20} />, text: "Perfil", path: "/perfil" },
-        { icon: <Settings size={20} />, text: "Configurações", path: "/configuracoes" }
+        ...(user ? [
+            { icon: <CircleUserRound size={20} />, text: "Perfil", path: "/perfil" },
+            { icon: <Settings size={20} />, text: "Configurações", path: "/configuracoes" }
+        ] : [])
     ];
 
     const getBarWidth = (isExpanded, itemCount) => {
@@ -55,7 +58,15 @@ export default function Topbar() {
 
     const handleLogout = () => {
         logout();
-        navigate("/login");
+        navigate("/homepage");
+    };
+
+    const handleAuthAction = () => {
+        if (user) {
+            handleLogout();
+        } else {
+            navigate("/login");
+        }
     };
 
     useEffect(() => {
@@ -160,11 +171,11 @@ export default function Topbar() {
 
                 <button
                     type="button"
-                    onClick={handleLogout}
-                    title="Sair"
+                    onClick={handleAuthAction}
+                    title={user ? "Sair" : "Login"}
                     className="relative z-10 flex flex-none items-center justify-center gap-2 rounded-full px-3 py-2 text-white transition-all duration-300 hover:bg-white/5 hover:text-[#F0B79B]"
                 >
-                    <LogOut size={20} className="shrink-0" />
+                    {user ? <LogOut size={20} className="shrink-0" /> : <LogIn size={20} className="shrink-0" />}
                     <span
                         style={{
                             maxWidth: open ? "7rem" : "0px",
@@ -174,7 +185,7 @@ export default function Topbar() {
                         }}
                         className="overflow-hidden whitespace-nowrap text-sm font-medium"
                     >
-                        Sair
+                        {user ? "Sair" : "Login"}
                     </span>
                 </button>
             </div>
