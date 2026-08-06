@@ -107,16 +107,21 @@ export default function HomePage() {
                                         />
                                     </div>
 
-                                    <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-[72%] bg-gradient-to-t from-[#3F220F]/95 via-[#5B3418]/90 to-transparent p-6 pt-20 text-[#FAF3E7] transition-transform duration-300 group-hover:translate-y-0">
-                                        <h3 className="break-words text-xl font-semibold leading-tight whitespace-normal">
+                                    <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full transform-gpu will-change-transform bg-gradient-to-t from-[#2A170A] via-[#4A2915]/95 to-transparent p-6 pt-24 text-[#FAF3E7] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0">
+                                        <h3 className="break-words whitespace-normal text-xl font-semibold leading-tight">
                                             {produto.nome}
                                         </h3>
-                                        <p className="mt-3 break-words text-sm leading-6 whitespace-normal text-[#FAF3E7]/90">
+                                        <p className="mt-3 break-all whitespace-normal text-sm leading-6 text-[#FAF3E7]/90">
                                             {produto.descricao}
                                         </p>
-                                        <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-[#F3E6D5]">
-                                            {formatarPreco(produto.preco)}
-                                        </p>
+                                        <div className="mt-5 flex items-center justify-between">
+                                            <span className="text-lg font-bold text-[#F8D9A0]">
+                                                {formatarPreco(produto.preco)}
+                                            </span>
+                                            <span className="rounded-full bg-[#B88A44] px-3 py-1 text-xs font-semibold">
+                                                {produto.sobremesa ? "Sobremesa" : "Prato"}
+                                            </span>
+                                        </div>
                                     </div>
                                 </article>
                             ))}

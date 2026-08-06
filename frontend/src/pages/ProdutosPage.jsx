@@ -132,7 +132,6 @@ export default function ProdutosPage() {
                         </p>
                     </div>
                     <div className="pt-10">
-
                         <button
                             type="button"
                             onClick={() => navigate("/produtos/add")}
