@@ -1,4 +1,61 @@
+import { useEffect, useState } from "react";
+import { listarCardapio } from "../services/CardapioService";
+
+const BACKEND_URL = "http://localhost:3000";
+
 export default function HomePage() {
+    const [produtos, setProdutos] = useState([]);
+    const [carregando, setCarregando] = useState(true);
+    const [erro, setErro] = useState("");
+
+    useEffect(() => {
+        let ativo = true;
+
+        const carregar = async () => {
+            try {
+                setCarregando(true);
+                setErro("");
+
+                const data = await listarCardapio();
+
+                if (ativo) {
+                    setProdutos(data);
+                }
+            } catch (error) {
+                if (ativo) {
+                    setErro(error.message || "Erro ao carregar o cardápio.");
+                }
+            } finally {
+                if (ativo) {
+                    setCarregando(false);
+                }
+            }
+        };
+
+        carregar();
+
+        return () => {
+            ativo = false;
+        };
+    }, []);
+
+    const formatarPreco = (valor) => {
+        const numero = Number(valor || 0);
+
+        return new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        }).format(numero);
+    };
+
+    const obterImagem = (imagem) => {
+        if (!imagem) {
+            return "https://placehold.co/640x420";
+        }
+
+        return imagem.startsWith("http") ? imagem : `${BACKEND_URL}${imagem}`;
+    };
+
     return (
         <main className="min-h-screen text-[#6F370F]">
             <section
@@ -19,7 +76,7 @@ export default function HomePage() {
                 id="cardapio"
                 className="min-h-screen scroll-mt-28 border-t border-[#8B4513]/12 px-6 py-24"
             >
-                <div className="mx-auto flex w-full max-w-6xl flex-col gap-10">
+                <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
                     <div className="max-w-2xl">
                         <p className="text-sm uppercase tracking-[0.35em] text-[#5B3418]">
                             Cardápio
@@ -29,26 +86,42 @@ export default function HomePage() {
                         </h2>
                     </div>
 
-                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                        <article className="rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 p-6 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm">
-                            <h3 className="text-xl font-semibold text-[#5B3418]">Prato 1</h3>
-                            <p className="mt-3 text-sm leading-6 text-[#7A4A2A]">
-                                Espaço reservado para os itens do cardápio quando você montar a lista real.
-                            </p>
-                        </article>
-                        <article className="rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 p-6 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm">
-                            <h3 className="text-xl font-semibold text-[#5B3418]">Prato 2</h3>
-                            <p className="mt-3 text-sm leading-6 text-[#7A4A2A]">
-                                A seção já fica posicionada para receber seus cards, imagens e preços.
-                            </p>
-                        </article>
-                        <article className="rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 p-6 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm md:col-span-2 xl:col-span-1">
-                            <h3 className="text-xl font-semibold text-[#5B3418]">Prato 3</h3>
-                            <p className="mt-3 text-sm leading-6 text-[#7A4A2A]">
-                                Quando você criar os itens de verdade, basta trocar este conteúdo.
-                            </p>
-                        </article>
-                    </div>
+                    {carregando ? (
+                        <p className="text-[#7A4A2A]">Carregando cardápio...</p>
+                    ) : erro ? (
+                        <p className="text-red-700">{erro}</p>
+                    ) : produtos.length === 0 ? (
+                        <p className="text-[#7A4A2A]">Nenhum produto cadastrado ainda.</p>
+                    ) : (
+                        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-[repeat(3,minmax(20rem,1fr))]">
+                            {produtos.map((produto) => (
+                                <article
+                                    key={produto.id}
+                                    className="group relative overflow-hidden rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#8B4513]/28 hover:shadow-[0_22px_70px_rgba(91,52,24,0.18)]"
+                                >
+                                    <div className="relative h-72 overflow-hidden">
+                                        <img
+                                            src={obterImagem(produto.imagem)}
+                                            alt={produto.nome}
+                                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                    </div>
+
+                                    <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-[72%] bg-gradient-to-t from-[#3F220F]/95 via-[#5B3418]/90 to-transparent p-6 pt-20 text-[#FAF3E7] transition-transform duration-300 group-hover:translate-y-0">
+                                        <h3 className="break-words text-xl font-semibold leading-tight whitespace-normal">
+                                            {produto.nome}
+                                        </h3>
+                                        <p className="mt-3 break-words text-sm leading-6 whitespace-normal text-[#FAF3E7]/90">
+                                            {produto.descricao}
+                                        </p>
+                                        <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-[#F3E6D5]">
+                                            {formatarPreco(produto.preco)}
+                                        </p>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
         </main>
