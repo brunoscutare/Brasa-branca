@@ -29,26 +29,37 @@ export default function Topbar() {
 
     const isAdmin = user?.superadmin || user?.funcao === "administrador";
 
-    const menus = [
+    const sharedMenus = [
         { icon: <House size={20} />, text: "Início", sectionId: "inicio" },
-        { icon: <UtensilsCrossed size={20} />, text: "Cardápio", sectionId: "cardapio" },
-        { icon: <ShoppingCart size={20} />, text: "Meu carrinho", path: "/carrinho" },
-        { icon: <Heart size={20} />, text: "Favoritos", path: "/favoritos" },
-        ...(user ? [
-            { icon: <BadgeDollarSign size={20} />, text: "Pagamentos", path: "/pagamentos" },
-            { icon: <NotebookText size={20} />, text: "Pedidos", path: "/pedidos" }
-        ] : []),
-        ...(isAdmin ? [
-            { icon: <Users size={20} />, text: "Clientes", path: "/clientes" },
-            { icon: <Star size={20} />, text: "Avaliações", path: "/avaliacoes" },
-            { icon: <BadgeDollarSign size={20} />, text: "Financeiro", path: "/financeiro" },
-            { icon: <UserCog size={20} />, text: "Funcionários", path: "/funcionarios" }
-        ] : []),
-        ...(user ? [
-            { icon: <CircleUserRound size={20} />, text: "Perfil", path: "/perfil" },
-            { icon: <Settings size={20} />, text: "Configurações", path: "/configuracoes" }
-        ] : [])
+        { icon: <UtensilsCrossed size={20} />, text: "Cardápio", sectionId: "cardapio" }
     ];
+
+    const guestAndCommonMenus = !isAdmin
+        ? [
+              { icon: <ShoppingCart size={20} />, text: "Carrinho", path: "/carrinho" },
+              { icon: <Heart size={20} />, text: "Favoritos", path: "/favoritos" }
+          ]
+        : [];
+
+    const commonMenus = [
+        { icon: <BadgeDollarSign size={20} />, text: "Pagamentos", path: "/pagamentos" },
+        { icon: <NotebookText size={20} />, text: "Pedidos", path: "/pedidos" },
+        { icon: <CircleUserRound size={20} />, text: "Perfil", path: "/perfil" },
+        { icon: <Settings size={20} />, text: "Configurações", path: "/configuracoes" }
+    ];
+
+    const adminMenus = [
+        { icon: <Package size={20} />, text: "Produtos", path: "/produtos" },
+        { icon: <NotebookText size={20} />, text: "Pedidos", path: "/pedidos" },
+        { icon: <Users size={20} />, text: "Clientes", path: "/clientes" },
+        { icon: <Star size={20} />, text: "Avaliações", path: "/avaliacoes" },
+        { icon: <BadgeDollarSign size={20} />, text: "Financeiro", path: "/financeiro" },
+        { icon: <UserCog size={20} />, text: "Funcionários", path: "/funcionarios" },
+        { icon: <CircleUserRound size={20} />, text: "Perfil", path: "/perfil" },
+        { icon: <Settings size={20} />, text: "Configurações", path: "/configuracoes" }
+    ];
+
+    const menus = [...sharedMenus, ...guestAndCommonMenus, ...(isAdmin ? adminMenus : user ? commonMenus : [])];
 
     const getBarWidth = (isExpanded, itemCount) => {
         const iconSlot = isExpanded ? 126 : 70;
