@@ -148,9 +148,9 @@ export default function AddProdutos() {
     }, [imagem]);
 
     return (
-        <main className="min-h-screen px-6 pb-12 pt-28 text-[#6F370F] md:px-10">
+        <main className="min-h-screen px-6 pb-10 pt-28 text-[#6F370F] md:px-10">
             <div className="mx-auto max-w-7xl">
-                <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div className="mb-10 flex items-start justify-between">
                     <div>
                         <p className="text-sm uppercase tracking-[0.35em] text-[#5B3418]">
                             Cardápio
@@ -162,14 +162,15 @@ export default function AddProdutos() {
                             Cadastre novos produtos que serão escolhidos para o cardápio.
                         </p>
                     </div>
-
-                    <button
-                        type="button"
-                        onClick={() => navigate("/produtos")}
-                        className="rounded-xl border border-[#8B4513]/20 bg-[#FAF3E7] px-6 py-3 font-semibold text-[#5B3418] transition hover:bg-[#F3E6D5]"
-                    >
-                        Voltar para produtos
-                    </button>
+                    <div className="pt-10">
+                        <button
+                            type="button"
+                            onClick={() => navigate("/produtos")}
+                            className="rounded-xl bg-[#8B4513] px-6 py-3 font-semibold text-[#FAF3E7] shadow-[0_12px_30px_rgba(91,52,24,0.18)] transition hover:bg-[#6F370F]"
+                        >
+                            Voltar para produtos
+                        </button>
+                    </div>
                 </div>
 
                 <form className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-stretch" onSubmit={handleSubmit}>
@@ -317,13 +318,12 @@ export default function AddProdutos() {
                                 setDragOver(false);
                                 aplicarImagem(event.dataTransfer.files?.[0]);
                             }}
-                            className={`flex min-h-[420px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-5 py-6 text-center transition-colors ${
-                                dragOver
-                                    ? "border-[#8B4513] bg-[#F3E6D5]/80"
-                                    : imagemPreview
-                                        ? "border-[#8B4513]/30 bg-[#F3E6D5]/50"
-                                        : "border-[#8B4513]/20 bg-[#FAF3E7] hover:bg-[#F3E6D5]/40"
-                            }`}
+                            className={`flex min-h-[420px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-5 py-6 text-center transition-colors ${dragOver
+                                ? "border-[#8B4513] bg-[#F3E6D5]/80"
+                                : imagemPreview
+                                    ? "border-[#8B4513]/30 bg-[#F3E6D5]/50"
+                                    : "border-[#8B4513]/20 bg-[#FAF3E7] hover:bg-[#F3E6D5]/40"
+                                }`}
                         >
                             {imagemPreview ? (
                                 <div className="flex w-full flex-col items-center gap-4">
@@ -385,6 +385,6 @@ export default function AddProdutos() {
                     </div>
                 </form>
             </div>
-        </main>
+        </main >
     );
 }

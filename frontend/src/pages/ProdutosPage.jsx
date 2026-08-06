@@ -119,7 +119,7 @@ export default function ProdutosPage() {
     return (
         <main className="min-h-screen px-6 pb-10 pt-28 text-[#6F370F] md:px-10">
             <div className="mx-auto max-w-7xl">
-                <div className="mb-10 flex items-center justify-between">
+                <div className="mb-10 flex items-start justify-between">
                     <div>
                         <p className="text-sm uppercase tracking-[0.35em] text-[#5B3418]">
                             Gestão do sistema
@@ -131,13 +131,16 @@ export default function ProdutosPage() {
                             Gerencie o cardápio do Brasa Branca.
                         </p>
                     </div>
-                    <button
-                        type="button"
-                        onClick={() => navigate("/produtos/add")}
-                        className="rounded-xl bg-[#8B4513] px-6 py-3 font-semibold text-[#FAF3E7] shadow-[0_12px_30px_rgba(91,52,24,0.18)] transition hover:bg-[#6F370F]"
-                    >
-                        + Novo Produto
-                    </button>
+                    <div className="pt-10">
+
+                        <button
+                            type="button"
+                            onClick={() => navigate("/produtos/add")}
+                            className="rounded-xl bg-[#8B4513] px-6 py-3 font-semibold text-[#FAF3E7] shadow-[0_12px_30px_rgba(91,52,24,0.18)] transition hover:bg-[#6F370F]"
+                        >
+                            + Novo Produto
+                        </button>
+                    </div>
                 </div>
                 <div className="rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 p-5 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm md:p-8">
                     <div className="mb-6 flex items-center justify-between">
@@ -211,11 +214,10 @@ export default function ProdutosPage() {
                                     </td>
                                     <td>
                                         <span
-                                            className={`rounded-full px-4 py-1 text-sm font-medium transition-all duration-200 ${
-                                                produto.sobremesa
+                                            className={`rounded-full px-4 py-1 text-sm font-medium transition-all duration-200 ${produto.sobremesa
                                                     ? "bg-[#C08A3E] text-[#FAF3E7] group-hover:bg-[#A97026]"
                                                     : "bg-[#5B3418] text-[#FAF3E7] group-hover:bg-[#3F220F]"
-                                            }`}
+                                                }`}
                                         >
                                             {produto.sobremesa ? "Sobremesa" : "Prato"}
                                         </span>
