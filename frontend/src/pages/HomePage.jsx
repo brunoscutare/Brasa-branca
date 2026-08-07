@@ -124,7 +124,7 @@ export default function HomePage() {
         <main className="min-h-screen text-[#6F370F]">
             <section
                 id="inicio"
-                className="flex min-h-screen items-center justify-center px-6 pt-28"
+                className="flex min-h-screen scroll-mt-28 items-center justify-center px-6 pt-28"
             >
                 <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 text-center">
                     <p className="text-sm uppercase tracking-[0.4em] text-[#5B3418]">

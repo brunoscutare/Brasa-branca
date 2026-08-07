@@ -90,11 +90,11 @@ export default function ProdutosPage() {
     const formatarDescricaoTabela = (descricao) => {
         const texto = String(descricao || "").trim();
 
-        if (texto.length <= 70) {
+        if (texto.length <= 60){
             return texto;
         }
 
-        return `${texto.slice(0, 70)}...`;
+        return `${texto.slice(0, 60)}...`;
     };
 
     const formatarNomeTabela = (nome) => {

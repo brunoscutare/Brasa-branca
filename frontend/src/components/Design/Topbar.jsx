@@ -22,6 +22,35 @@ const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
 const DURATION_MS = 850;
 const ITEM_SLOT = 52;
 const BAR_PADDING = 58;
+const SCROLL_OFFSET = 112;
+
+function scrollToSection(sectionId) {
+    const element = document.getElementById(sectionId);
+    if (!element) return;
+
+    const top = element.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+    window.scrollTo({ top, behavior: "smooth" });
+}
+
+function scrollToSectionWhenReady(sectionId, onDone) {
+    let frames = 0;
+
+    const attempt = () => {
+        const element = document.getElementById(sectionId);
+
+        if (element) {
+            scrollToSection(sectionId);
+            onDone?.();
+            return;
+        }
+
+        if (frames++ < 120) {
+            requestAnimationFrame(attempt);
+        }
+    };
+
+    attempt();
+}
 
 function MenuButton({ icon, text, open, isActive, onClick }) {
     return (
@@ -62,6 +91,7 @@ export default function Topbar() {
     const [openWidth, setOpenWidth] = useState(400);
     const [activeSection, setActiveSection] = useState("inicio");
     const measureRef = useRef(null);
+    const pendingSectionRef = useRef(null);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -159,6 +189,19 @@ export default function Topbar() {
         return () => observer.disconnect();
     }, [location.pathname]);
 
+    useEffect(() => {
+        if (location.pathname !== "/homepage") return undefined;
+
+        const target = pendingSectionRef.current;
+        if (!target) return undefined;
+
+        scrollToSectionWhenReady(target, () => {
+            pendingSectionRef.current = null;
+        });
+
+        return undefined;
+    }, [location.pathname]);
+
     const isActiveMenu = (path) => {
         if (!path) {
             return false;
@@ -173,15 +216,17 @@ export default function Topbar() {
 
     const handleMenuClick = (item) => {
         if (item.sectionId) {
+            pendingSectionRef.current = item.sectionId;
+            setActiveSection(item.sectionId);
+
             if (location.pathname !== "/homepage") {
-                navigate("/homepage", { replace: false });
-                window.setTimeout(() => {
-                    document.getElementById(item.sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
-                }, 0);
+                navigate("/homepage");
                 return;
             }
 
-            document.getElementById(item.sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+            scrollToSectionWhenReady(item.sectionId, () => {
+                pendingSectionRef.current = null;
+            });
             return;
         }
 
