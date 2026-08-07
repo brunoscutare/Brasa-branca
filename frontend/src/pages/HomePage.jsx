@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import Footer from "../components/Design/Footer";
 import { listarCardapio } from "../services/CardapioService";
 
 const BACKEND_URL = "http://localhost:3000";
@@ -124,7 +125,7 @@ export default function HomePage() {
         <main className="min-h-screen text-[#6F370F]">
             <section
                 id="inicio"
-                className="flex min-h-screen scroll-mt-28 items-center justify-center px-6 pt-28"
+                className="flex min-h-screen scroll-mt-28 flex-col items-center px-6 pt-64 md:pt-72"
             >
                 <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 text-center">
                     <p className="text-sm uppercase tracking-[0.4em] text-[#5B3418]">
@@ -133,6 +134,9 @@ export default function HomePage() {
                     <h1 className="text-5xl font-semibold leading-tight text-[#5B3418] md:text-7xl">
                         Bem-vindo à sua experiência gastronômica.
                     </h1>
+                    <p className="mx-auto max-w-2xl text-base leading-7 text-[#7A4A2A] md:text-lg">
+                        Carnes nobres, sobremesas artesanais e o calor de uma brasa feita com cuidado.
+                    </p>
                 </div>
             </section>
 
@@ -192,6 +196,8 @@ export default function HomePage() {
                     )}
                 </div>
             </section>
+
+            <Footer />
         </main>
     );
 }
