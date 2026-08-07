@@ -12,7 +12,6 @@ import {
     CircleUserRound,
     Settings,
     ShoppingCart,
-    Heart,
     LogOut,
     LogIn
 } from "lucide-react";
@@ -105,10 +104,7 @@ export default function Topbar() {
     ];
 
     const guestAndCommonMenus = !isAdminUser
-        ? [
-              { icon: <ShoppingCart size={20} />, text: "Carrinho", path: "/carrinho" },
-              { icon: <Heart size={20} />, text: "Favoritos", path: "/favoritos" }
-          ]
+        ? [{ icon: <ShoppingCart size={20} />, text: "Carrinho", path: "/carrinho" }]
         : [];
 
     const commonMenus = [

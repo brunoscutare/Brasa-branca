@@ -35,10 +35,6 @@ const removerImagemDaPasta = async (imagem) => {
 app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static(uploadsPath));
-app.use((req, _res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    next();
-});
 
 app.get("/", (req, res) => {
     res.send("API funcionando!");
@@ -48,7 +44,6 @@ app.use("/usuarios", usuariosRoutes);
 app.use("/produtos-api", produtoRoutes);
 
 app.get("/cardapio", (req, res) => {
-    console.log("GET /cardapio hit");
     const sql = `
         SELECT id, nome, descricao, preco, imagem, sobremesa, exibir_no_cardapio, criado_em, atualizado_em
         FROM produtos

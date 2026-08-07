@@ -44,6 +44,16 @@ export function AdminRoute({ children }) {
     return children;
 }
 
+export function ShopRoute({ children }) {
+    const { user } = useAuth();
+
+    if (isAdmin(user)) {
+        return <Navigate to="/produtos" replace />;
+    }
+
+    return children;
+}
+
 export function AuthRoute({ children }) {
     const { user } = useAuth();
 

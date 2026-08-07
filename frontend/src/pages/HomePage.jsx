@@ -1,17 +1,33 @@
 import { useEffect, useMemo, useState } from "react";
+import { ShoppingCart } from "lucide-react";
 import Footer from "../components/Design/Footer";
+import Toast from "../components/ui/Toast";
+import { useAuth } from "../contexts/AuthContext";
+import { useCart } from "../contexts/CartContext";
 import { listarCardapio } from "../services/CardapioService";
-
+import { isAdmin } from "../utils/auth";
 const BACKEND_URL = "http://localhost:3000";
 
 function ehSobremesa(produto) {
     return produto.sobremesa === true || produto.sobremesa === 1;
 }
 
-function CardProduto({ produto, formatarPreco, obterImagem }) {
+function CardProduto({
+    produto,
+    formatarPreco,
+    obterImagem,
+    mostrarCarrinho,
+    onAdicionarCarrinho,
+    quantidade = 0
+}) {
     return (
         <article className="group relative overflow-hidden rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#8B4513]/28 hover:shadow-[0_22px_70px_rgba(91,52,24,0.18)]">
             <div className="relative h-72 overflow-hidden">
+                {mostrarCarrinho && quantidade > 0 ? (
+                    <span className="absolute right-4 top-4 z-10 flex h-8 min-w-8 items-center justify-center rounded-full bg-[#8B4513] px-2 text-sm font-bold text-[#FAF3E7] shadow-[0_8px_24px_rgba(0,0,0,0.35)]">
+                        {quantidade}
+                    </span>
+                ) : null}
                 <img
                     src={obterImagem(produto.imagem)}
                     alt={produto.nome}
@@ -19,27 +35,47 @@ function CardProduto({ produto, formatarPreco, obterImagem }) {
                 />
             </div>
 
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full transform-gpu will-change-transform bg-gradient-to-t from-[#2A170A] via-[#4A2915]/95 to-transparent p-6 pt-24 text-[#FAF3E7] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0">
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full transform-gpu will-change-transform bg-gradient-to-t from-[#2A170A] via-[#4A2915]/95 to-transparent p-6 pt-24 text-[#FAF3E7] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 group-hover:pointer-events-auto">
                 <h3 className="text-balance text-xl font-semibold leading-tight">
                     {produto.nome}
                 </h3>
                 <p className="mt-3 text-pretty text-sm leading-6 text-[#FAF3E7]/90">
                     {produto.descricao}
                 </p>
-                <div className="mt-5 flex items-center justify-between">
+                <div className="mt-5 flex items-center justify-between gap-3">
                     <span className="text-lg font-bold text-[#F8D9A0]">
                         {formatarPreco(produto.preco)}
                     </span>
-                    <span className="rounded-full bg-[#B88A44] px-3 py-1 text-xs font-semibold">
-                        {ehSobremesa(produto) ? "Sobremesa" : "Prato"}
-                    </span>
+                    <div className="flex items-center gap-2">
+                        {mostrarCarrinho ? (
+                            <button
+                                type="button"
+                                onClick={() => onAdicionarCarrinho(produto)}
+                                className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#8B4513] text-[#FAF3E7] transition hover:bg-[#F8D9A0] hover:text-[#4A2915]"
+                                title="Adicionar ao carrinho"
+                                aria-label="Adicionar ao carrinho"
+                            >
+                                <ShoppingCart size={18} aria-hidden="true" />
+                            </button>
+                        ) : null}
+                        <span className="rounded-full bg-[#B88A44] px-3 py-1 text-xs font-semibold">
+                            {ehSobremesa(produto) ? "Sobremesa" : "Prato"}
+                        </span>
+                    </div>
                 </div>
             </div>
         </article>
     );
 }
 
-function GradeProdutos({ produtos, formatarPreco, obterImagem }) {
+function GradeProdutos({
+    produtos,
+    formatarPreco,
+    obterImagem,
+    mostrarCarrinho,
+    onAdicionarCarrinho,
+    quantidades
+}) {
     if (produtos.length === 0) {
         return null;
     }
@@ -52,6 +88,9 @@ function GradeProdutos({ produtos, formatarPreco, obterImagem }) {
                     produto={produto}
                     formatarPreco={formatarPreco}
                     obterImagem={obterImagem}
+                    mostrarCarrinho={mostrarCarrinho}
+                    onAdicionarCarrinho={onAdicionarCarrinho}
+                    quantidade={quantidades.get(produto.id) || 0}
                 />
             ))}
         </div>
@@ -59,10 +98,31 @@ function GradeProdutos({ produtos, formatarPreco, obterImagem }) {
 }
 
 export default function HomePage() {
+    const { user } = useAuth();
+    const { addItem, items } = useCart();
     const [produtos, setProdutos] = useState([]);
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState("");
+    const [toast, setToast] = useState(null);
+    const mostrarCarrinho = !isAdmin(user);
 
+    const quantidades = useMemo(() => {
+        const map = new Map();
+
+        items.forEach((item) => {
+            map.set(item.id, item.quantidade);
+        });
+
+        return map;
+    }, [items]);
+
+    const handleAdicionarCarrinho = (produto) => {
+        addItem(produto);
+        setToast({
+            type: "success",
+            message: `${produto.nome} adicionado ao carrinho.`
+        });
+    };
     useEffect(() => {
         let ativo = true;
 
@@ -176,8 +236,10 @@ export default function HomePage() {
                                     produtos={pratos}
                                     formatarPreco={formatarPreco}
                                     obterImagem={obterImagem}
-                                />
-                            </div>
+                                    mostrarCarrinho={mostrarCarrinho}
+                                    onAdicionarCarrinho={handleAdicionarCarrinho}
+                                    quantidades={quantidades}
+                                />                            </div>
 
                             <div className="flex flex-col gap-6">
                                 <div>
@@ -190,14 +252,16 @@ export default function HomePage() {
                                     produtos={sobremesas}
                                     formatarPreco={formatarPreco}
                                     obterImagem={obterImagem}
-                                />
-                            </div>
+                                    mostrarCarrinho={mostrarCarrinho}
+                                    onAdicionarCarrinho={handleAdicionarCarrinho}
+                                    quantidades={quantidades}
+                                />                            </div>
                         </div>
                     )}
                 </div>
             </section>
 
             <Footer />
-        </main>
-    );
+            <Toast toast={toast} onClose={() => setToast(null)} />
+        </main>    );
 }

@@ -23,6 +23,15 @@ db.connect((err) => {
             }
         }
     );
+
+    db.query(
+        "ALTER TABLE usuarios ADD COLUMN carrinho JSON NULL",
+        (alterErr) => {
+            if (alterErr && alterErr.code !== "ER_DUP_FIELDNAME") {
+                console.error("Erro ao garantir coluna carrinho:", alterErr.message);
+            }
+        }
+    );
 });
 
 export default db;

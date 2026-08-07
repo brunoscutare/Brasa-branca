@@ -6,7 +6,8 @@ import {
     AdminRoute,
     AuthRoute,
     ClientRoute,
-    PublicOnlyRoute
+    PublicOnlyRoute,
+    ShopRoute
 } from "./components/routing/RouteGuards";
 import { homePathFor } from "./utils/auth";
 
@@ -14,6 +15,7 @@ const HomePage = lazy(() => import("./pages/HomePage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const ProdutosPage = lazy(() => import("./pages/ProdutosPage"));
 const AddProdutos = lazy(() => import("./components/Produtos/AddProdutos"));
+const CarrinhoPage = lazy(() => import("./pages/CarrinhoPage"));
 
 function AuthHomeRedirect() {
     const { user } = useAuth();
@@ -70,8 +72,14 @@ export default function App() {
                     }
                 />
 
-                <Route path="/carrinho" element={<Navigate to="/homepage" replace />} />
-                <Route path="/favoritos" element={<Navigate to="/homepage" replace />} />
+                <Route
+                    path="/carrinho"
+                    element={
+                        <ShopRoute>
+                            <CarrinhoPage />
+                        </ShopRoute>
+                    }
+                />
 
                 <Route
                     path="/pagamentos"

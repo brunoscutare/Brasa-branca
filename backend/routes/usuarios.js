@@ -4,6 +4,87 @@ import bcrypt from "bcryptjs";
 
 const router = Router();
 
+function parseCarrinho(valor) {
+    if (!valor) {
+        return [];
+    }
+
+    if (Array.isArray(valor)) {
+        return valor;
+    }
+
+    try {
+        const parsed = typeof valor === "string" ? JSON.parse(valor) : valor;
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+}
+
+function sanitizarItensCarrinho(itens) {
+    if (!Array.isArray(itens)) {
+        return [];
+    }
+
+    return itens
+        .filter((item) => item && item.id != null && item.nome)
+        .map((item) => ({
+            id: Number(item.id),
+            nome: String(item.nome),
+            preco: Number(item.preco || 0),
+            imagem: String(item.imagem || ""),
+            quantidade: Math.max(1, Number(item.quantidade || 1))
+        }));
+}
+
+router.get("/:id/carrinho", (req, res) => {
+    const usuarioId = Number(req.params.id);
+
+    if (!usuarioId) {
+        return res.status(400).json({ erro: "Usuário inválido." });
+    }
+
+    const sql = "SELECT carrinho FROM usuarios WHERE id = ? LIMIT 1";
+
+    db.query(sql, [usuarioId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ erro: err.message });
+        }
+
+        if (result.length === 0) {
+            return res.status(404).json({ erro: "Usuário não encontrado." });
+        }
+
+        res.status(200).json(parseCarrinho(result[0].carrinho));
+    });
+});
+
+router.put("/:id/carrinho", (req, res) => {
+    const usuarioId = Number(req.params.id);
+    const itens = sanitizarItensCarrinho(req.body?.items);
+
+    if (!usuarioId) {
+        return res.status(400).json({ erro: "Usuário inválido." });
+    }
+
+    const sql = "UPDATE usuarios SET carrinho = ? WHERE id = ?";
+
+    db.query(sql, [JSON.stringify(itens), usuarioId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ erro: err.message });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ erro: "Usuário não encontrado." });
+        }
+
+        res.status(200).json({
+            mensagem: "Carrinho atualizado com sucesso.",
+            items: itens
+        });
+    });
+});
+
 // Buscar todos os usuários
 router.get("/", (req, res) => {
 
