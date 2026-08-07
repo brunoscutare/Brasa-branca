@@ -19,10 +19,10 @@ function CardProduto({ produto, formatarPreco, obterImagem }) {
             </div>
 
             <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full transform-gpu will-change-transform bg-gradient-to-t from-[#2A170A] via-[#4A2915]/95 to-transparent p-6 pt-24 text-[#FAF3E7] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0">
-                <h3 className="break-words whitespace-normal text-xl font-semibold leading-tight">
+                <h3 className="text-balance text-xl font-semibold leading-tight">
                     {produto.nome}
                 </h3>
-                <p className="mt-3 break-all whitespace-normal text-sm leading-6 text-[#FAF3E7]/90">
+                <p className="mt-3 text-pretty text-sm leading-6 text-[#FAF3E7]/90">
                     {produto.descricao}
                 </p>
                 <div className="mt-5 flex items-center justify-between">

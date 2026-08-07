@@ -372,33 +372,35 @@ export default function AddProdutos() {
                                 placeholder="Descreva o prato..."
                             />
 
-                            <label className="flex items-start gap-3 rounded-2xl border border-[#8B4513]/20 bg-[#FAF3E7] px-4 py-3 text-[#5B3418]">
-                                <input
-                                    name="sobremesa"
-                                    type="checkbox"
-                                    checked={form.sobremesa}
-                                    onChange={handleChange}
-                                    className="mt-1 h-4 w-4 accent-[#8B4513]"
-                                />
+                            <div className="grid grid-cols-2 gap-3">
+                                <label className="flex min-w-0 items-center gap-3 rounded-2xl border border-[#8B4513]/20 bg-[#FAF3E7] px-4 py-3 text-[#5B3418]">
+                                    <input
+                                        name="sobremesa"
+                                        type="checkbox"
+                                        checked={form.sobremesa}
+                                        onChange={handleChange}
+                                        className="h-4 w-4 shrink-0 accent-[#8B4513]"
+                                    />
 
-                                <span className="text-sm font-medium leading-6">
-                                    É uma sobremesa
-                                </span>
-                            </label>
+                                    <span className="text-sm font-medium leading-6">
+                                        É uma sobremesa
+                                    </span>
+                                </label>
 
-                            <label className="flex items-start gap-3 rounded-2xl border border-[#8B4513]/20 bg-[#FAF3E7] px-4 py-3 text-[#5B3418]">
-                                <input
-                                    name="exibir_no_cardapio"
-                                    type="checkbox"
-                                    checked={form.exibir_no_cardapio}
-                                    onChange={handleChange}
-                                    className="mt-1 h-4 w-4 accent-[#8B4513]"
-                                />
+                                <label className="flex min-w-0 items-center gap-3 rounded-2xl border border-[#8B4513]/20 bg-[#FAF3E7] px-4 py-3 text-[#5B3418]">
+                                    <input
+                                        name="exibir_no_cardapio"
+                                        type="checkbox"
+                                        checked={form.exibir_no_cardapio}
+                                        onChange={handleChange}
+                                        className="h-4 w-4 shrink-0 accent-[#8B4513]"
+                                    />
 
-                                <span className="text-sm font-medium leading-6">
-                                    Exibir no cardápio público
-                                </span>
-                            </label>
+                                    <span className="text-sm font-medium leading-6">
+                                        Exibir no cardápio público
+                                    </span>
+                                </label>
+                            </div>
 
                             <button
                                 type="submit"
