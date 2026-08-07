@@ -1,13 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { criarItemCardapio } from "../../services/CardapioService";
+import { useNavigate, useParams } from "react-router-dom";
 import { Image, Upload, X } from "lucide-react";
-
+import Input from "../ui/Input.jsx";
+import Toast from "../ui/Toast.jsx";
+import {
+    atualizarItemCardapio,
+    BACKEND_URL,
+    buscarProduto,
+    criarItemCardapio,
+    produtoExibeNoCardapio
+} from "../../services/CardapioService";
 const emptyForm = {
     nome: "",
     descricao: "",
     preco: "",
-    sobremesa: false
+    sobremesa: false,
+    exibir_no_cardapio: false
 };
 
 const formatCurrency = (value) => {
@@ -34,17 +42,32 @@ const parseCurrency = (value) => {
     return Number(normalized || 0);
 };
 
+const formatPrecoFromDb = (valor) => {
+    return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    }).format(Number(valor || 0));
+};
+
+const obterUrlImagem = (imagem) => {
+    if (!imagem) return "";
+    return imagem.startsWith("http") ? imagem : `${BACKEND_URL}${imagem}`;
+};
+
 export default function AddProdutos() {
     const navigate = useNavigate();
+    const { id } = useParams();
+    const editando = Boolean(id);
     const imagemInputRef = useRef(null);
     const [form, setForm] = useState(emptyForm);
     const [imagem, setImagem] = useState(null);
+    const [imagemExistente, setImagemExistente] = useState("");
     const [imagemPreview, setImagemPreview] = useState("");
     const [dragOver, setDragOver] = useState(false);
+    const [carregando, setCarregando] = useState(editando);
     const [salvando, setSalvando] = useState(false);
-    const [erro, setErro] = useState("");
-    const [sucesso, setSucesso] = useState("");
-
+    const [erros, setErros] = useState({});
+    const [toast, setToast] = useState(null);
     useEffect(() => {
         return () => {
             if (imagemPreview?.startsWith("blob:")) {
@@ -53,8 +76,65 @@ export default function AddProdutos() {
         };
     }, [imagemPreview]);
 
+    useEffect(() => {
+        if (!editando) return undefined;
+
+        let ativo = true;
+
+        const carregarProduto = async () => {
+            try {
+                setCarregando(true);
+                const produto = await buscarProduto(id);
+
+                if (!ativo) return;
+
+                setForm({
+                    nome: produto.nome || "",
+                    descricao: produto.descricao || "",
+                    preco: formatPrecoFromDb(produto.preco),
+                    sobremesa: Boolean(produto.sobremesa),
+                    exibir_no_cardapio: produtoExibeNoCardapio(produto)
+                });
+
+                if (produto.imagem) {
+                    setImagemExistente(produto.imagem);
+                    setImagemPreview(obterUrlImagem(produto.imagem));
+                }
+            } catch (error) {
+                if (ativo) {
+                    setToast({
+                        type: "error",
+                        title: "Erro ao carregar",
+                        message: error.message || "Não foi possível carregar o produto."
+                    });
+                }
+            } finally {
+                if (ativo) {
+                    setCarregando(false);
+                }
+            }
+        };
+
+        carregarProduto();
+
+        return () => {
+            ativo = false;
+        };
+    }, [editando, id]);
+
+    const limparErro = (campo) => {        setErros((current) => {
+            if (!current[campo]) return current;
+
+            const next = { ...current };
+            delete next[campo];
+            return next;
+        });
+    };
+
     const handleChange = (event) => {
         const { name, value, type, checked } = event.target;
+
+        limparErro(name);
 
         setForm((current) => ({
             ...current,
@@ -64,7 +144,9 @@ export default function AddProdutos() {
 
     const limparImagem = () => {
         setImagem(null);
+        setImagemExistente("");
         setImagemPreview("");
+        limparErro("imagem");
         if (imagemInputRef.current) {
             imagemInputRef.current.value = "";
         }
@@ -74,16 +156,23 @@ export default function AddProdutos() {
         if (!file) return;
 
         if (!file.type.startsWith("image/")) {
-            setErro("Envie apenas uma imagem JPG, PNG ou WEBP.");
+            setErros((current) => ({
+                ...current,
+                imagem: "Envie apenas uma imagem JPG, PNG ou WEBP."
+            }));
             return;
         }
 
         if (file.size > 8 * 1024 * 1024) {
-            setErro("A imagem deve ter no máximo 8MB.");
+            setErros((current) => ({
+                ...current,
+                imagem: "A imagem deve ter no máximo 8MB."
+            }));
             return;
         }
 
-        setErro("");
+        limparErro("imagem");
+
         if (imagemPreview?.startsWith("blob:")) {
             URL.revokeObjectURL(imagemPreview);
         }
@@ -106,13 +195,39 @@ export default function AddProdutos() {
         }));
     };
 
+    const validar = () => {
+        const next = {};
+
+        if (!form.nome.trim()) {
+            next.nome = "Informe o nome do produto";
+        }
+
+        if (!form.preco.trim()) {
+            next.preco = "Informe o preço";
+        } else if (parseCurrency(form.preco) <= 0) {
+            next.preco = "Informe um valor maior que zero";
+        }
+
+        if (!form.descricao.trim()) {
+            next.descricao = "Informe a descrição";
+        }
+
+        if (!imagem && !imagemExistente) {
+            next.imagem = "Selecione uma imagem para continuar";
+        }
+        setErros(next);
+        return Object.keys(next).length === 0;
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setErro("");
-        setSucesso("");
 
-        if (!imagem) {
-            setErro("Selecione uma imagem para continuar.");
+        if (!validar()) {
+            setToast({
+                type: "error",
+                title: "Revise o formulário",
+                message: "Corrija os campos destacados antes de salvar."
+            });
             return;
         }
 
@@ -120,20 +235,37 @@ export default function AddProdutos() {
             setSalvando(true);
 
             const payload = new FormData();
-            payload.append("nome", form.nome);
-            payload.append("descricao", form.descricao);
+            payload.append("nome", form.nome.trim());
+            payload.append("descricao", form.descricao.trim());
             payload.append("preco", String(parseCurrency(form.preco)));
             payload.append("sobremesa", String(Boolean(form.sobremesa)));
+            payload.append("exibir_no_cardapio", String(Boolean(form.exibir_no_cardapio)));
+
             if (imagem) {
                 payload.append("imagem", imagem);
             }
 
-            await criarItemCardapio(payload);
-            setForm(emptyForm);
-            limparImagem();
-            navigate("/produtos");
+            if (editando) {
+                await atualizarItemCardapio(id, payload);
+            } else {
+                await criarItemCardapio(payload);
+            }
+
+            setToast({
+                type: "success",
+                title: editando ? "Produto atualizado" : "Produto cadastrado",
+                message: editando
+                    ? "As alterações foram salvas no cardápio."
+                    : "O item foi salvo no cardápio."
+            });
+            window.setTimeout(() => {
+                navigate("/produtos");
+            }, 700);
         } catch (error) {
-            setErro(error.message);
+            setToast({
+                type: "error",
+                title: "Não foi possível salvar",
+                message: error.message || (editando ? "Erro ao atualizar produto." : "Erro ao cadastrar produto.")            });
         } finally {
             setSalvando(false);
         }
@@ -144,11 +276,26 @@ export default function AddProdutos() {
             return imagem.name;
         }
 
-        return "JPG, PNG ou WEBP, máx. 8MB";
-    }, [imagem]);
+        if (imagemExistente) {
+            return "Imagem atual do produto";
+        }
 
-    return (
-        <main className="min-h-screen px-6 pb-10 pt-28 text-[#6F370F] md:px-10">
+        return "JPG, PNG ou WEBP, máx. 8MB";
+    }, [imagem, imagemExistente]);
+
+    if (carregando) {
+        return (
+            <main className="min-h-screen px-6 pb-10 pt-28 text-[#6F370F] md:px-10">
+                <div className="mx-auto max-w-7xl">
+                    <p className="text-lg text-[#7A4A2A]">Carregando produto...</p>
+                </div>
+            </main>
+        );
+    }
+
+    return (        <main className="min-h-screen px-6 pb-10 pt-28 text-[#6F370F] md:px-10">
+            <Toast toast={toast} onClose={() => setToast(null)} />
+
             <div className="mx-auto max-w-7xl">
                 <div className="mb-10 flex items-start justify-between">
                     <div>
@@ -156,12 +303,13 @@ export default function AddProdutos() {
                             Cardápio
                         </p>
                         <h1 className="mt-3 text-4xl font-bold text-[#5B3418] md:text-5xl">
-                            Adicionar produto
+                            {editando ? "Editar produto" : "Adicionar produto"}
                         </h1>
                         <p className="mt-3 max-w-2xl text-base leading-7 text-[#7A4A2A]">
-                            Cadastre novos produtos que serão escolhidos para o cardápio.
-                        </p>
-                    </div>
+                            {editando
+                                ? "Atualize os dados do produto no cardápio."
+                                : "Cadastre novos produtos que serão escolhidos para o cardápio."}
+                        </p>                    </div>
                     <div className="pt-10">
                         <button
                             type="button"
@@ -173,69 +321,56 @@ export default function AddProdutos() {
                     </div>
                 </div>
 
-                <form className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-stretch" onSubmit={handleSubmit}>
+                <form className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-stretch" onSubmit={handleSubmit} noValidate>
                     <div className="rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 p-6 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm md:p-8">
                         <div className="mb-6">
                             <h2 className="text-2xl font-semibold text-[#5B3418]">
-                                Novo item
+                                {editando ? "Dados do item" : "Novo item"}
                             </h2>
                             <p className="mt-2 text-sm text-[#7A4A2A]">
-                                Preencha os dados do produto para salvar no banco.
-                            </p>
-                        </div>
+                                {editando
+                                    ? "Revise e salve as alterações do produto."
+                                    : "Preencha os dados do produto para salvar no banco."}
+                            </p>                        </div>
 
                         <div className="grid gap-5">
-                            <div className="grid gap-5 md:grid-cols-2">
-                                <div className="grid gap-2">
-                                    <label className="text-sm font-medium text-[#5B3418]">
-                                        Nome
-                                    </label>
-
-                                    <input
-                                        name="nome"
-                                        value={form.nome}
-                                        onChange={handleChange}
-                                        required
-                                        className="rounded-xl border border-[#8B4513]/20 bg-[#FAF3E7] px-4 py-3 text-[#5B3418] outline-none transition placeholder:text-[#8B7B70] focus:border-[#8B4513]"
-                                        placeholder="Ex: Picanha Premium"
-                                    />
-                                </div>
-
-                                <div className="grid gap-2">
-                                    <label className="text-sm font-medium text-[#5B3418]">
-                                        Preço
-                                    </label>
-
-                                    <input
-                                        name="preco"
-                                        type="text"
-                                        value={form.preco}
-                                        onChange={handleChange}
-                                        onFocus={handlePriceFocus}
-                                        onBlur={handlePriceBlur}
-                                        required
-                                        className="rounded-xl border border-[#8B4513]/20 bg-[#FAF3E7] px-4 py-3 text-[#5B3418] outline-none transition placeholder:text-[#8B7B70] focus:border-[#8B4513]"
-                                        placeholder="R$ 0,00"
-                                        inputMode="numeric"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid gap-2">
-                                <label className="text-sm font-medium text-[#5B3418]">
-                                    Descrição
-                                </label>
-
-                                <textarea
-                                    name="descricao"
-                                    value={form.descricao}
+                            <div className="grid items-start gap-5 md:grid-cols-2">
+                                <Input
+                                    label="Nome"
+                                    name="nome"
+                                    value={form.nome}
                                     onChange={handleChange}
+                                    error={erros.nome}
                                     required
-                                    rows={4}
-                                    className="rounded-xl border border-[#8B4513]/20 bg-[#FAF3E7] px-4 py-3 text-[#5B3418] outline-none transition placeholder:text-[#8B7B70] focus:border-[#8B4513]"
-                                    placeholder="Descreva o prato..."
+                                    placeholder="Ex: Picanha Premium"
+                                />
+
+                                <Input
+                                    label="Preço"
+                                    name="preco"
+                                    type="text"
+                                    value={form.preco}
+                                    onChange={handleChange}
+                                    onFocus={handlePriceFocus}
+                                    onBlur={handlePriceBlur}
+                                    error={erros.preco}
+                                    required
+                                    placeholder="R$ 0,00"
+                                    inputMode="numeric"
                                 />
                             </div>
+
+                            <Input
+                                label="Descrição"
+                                name="descricao"
+                                value={form.descricao}
+                                onChange={handleChange}
+                                error={erros.descricao}
+                                required
+                                multiline
+                                rows={4}
+                                placeholder="Descreva o prato..."
+                            />
 
                             <label className="flex items-start gap-3 rounded-2xl border border-[#8B4513]/20 bg-[#FAF3E7] px-4 py-3 text-[#5B3418]">
                                 <input
@@ -251,25 +386,26 @@ export default function AddProdutos() {
                                 </span>
                             </label>
 
-                            {erro ? (
-                                <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                                    {erro}
-                                </p>
-                            ) : null}
+                            <label className="flex items-start gap-3 rounded-2xl border border-[#8B4513]/20 bg-[#FAF3E7] px-4 py-3 text-[#5B3418]">
+                                <input
+                                    name="exibir_no_cardapio"
+                                    type="checkbox"
+                                    checked={form.exibir_no_cardapio}
+                                    onChange={handleChange}
+                                    className="mt-1 h-4 w-4 accent-[#8B4513]"
+                                />
 
-                            {sucesso ? (
-                                <p className="rounded-xl border border-[#8B4513]/20 bg-[#F3E6D5] px-4 py-3 text-sm text-[#5B3418]">
-                                    {sucesso}
-                                </p>
-                            ) : null}
+                                <span className="text-sm font-medium leading-6">
+                                    Exibir no cardápio público
+                                </span>
+                            </label>
 
                             <button
                                 type="submit"
                                 disabled={salvando}
                                 className="w-full rounded-xl bg-[#8B4513] px-6 py-3 font-semibold text-[#FAF3E7] shadow-[0_12px_30px_rgba(91,52,24,0.18)] transition hover:bg-[#6F370F] disabled:cursor-not-allowed disabled:opacity-60"
                             >
-                                {salvando ? "Salvando..." : "Salvar Produto"}
-                            </button>
+                                {salvando ? "Salvando..." : editando ? "Salvar alterações" : "Salvar Produto"}                            </button>
                         </div>
                     </div>
 
@@ -318,12 +454,15 @@ export default function AddProdutos() {
                                 setDragOver(false);
                                 aplicarImagem(event.dataTransfer.files?.[0]);
                             }}
-                            className={`flex min-h-[420px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-5 py-6 text-center transition-colors ${dragOver
-                                ? "border-[#8B4513] bg-[#F3E6D5]/80"
-                                : imagemPreview
-                                    ? "border-[#8B4513]/30 bg-[#F3E6D5]/50"
-                                    : "border-[#8B4513]/20 bg-[#FAF3E7] hover:bg-[#F3E6D5]/40"
-                                }`}
+                            className={`flex min-h-[420px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-5 py-6 text-center transition-colors ${
+                                dragOver
+                                    ? "border-[#8B4513] bg-[#F3E6D5]/80"
+                                    : erros.imagem
+                                      ? "border-red-500 bg-red-50/40"
+                                      : imagemPreview
+                                        ? "border-[#8B4513]/30 bg-[#F3E6D5]/50"
+                                        : "border-[#8B4513]/20 bg-[#FAF3E7] hover:bg-[#F3E6D5]/40"
+                            }`}
                         >
                             {imagemPreview ? (
                                 <div className="flex w-full flex-col items-center gap-4">
@@ -382,9 +521,13 @@ export default function AddProdutos() {
                                 </>
                             )}
                         </div>
+
+                        <p className="mt-2 min-h-5 text-sm leading-5 text-red-600" aria-live="polite">
+                            {erros.imagem || "\u00A0"}
+                        </p>
                     </div>
                 </form>
             </div>
-        </main >
+        </main>
     );
 }

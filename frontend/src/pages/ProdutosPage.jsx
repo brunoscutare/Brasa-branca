@@ -1,8 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { excluirItemCardapio, listarCardapio } from "../services/CardapioService";
+import FilterSelect from "../components/FilterSelect.jsx";
+import {
+    atualizarExibicaoCardapio,
+    excluirItemCardapio,
+    listarProdutos,
+    produtoExibeNoCardapio
+} from "../services/CardapioService";
 
 const BACKEND_URL = "http://localhost:3000";
+
+const FILTRO_OPTIONS = [
+    { value: "Todos", label: "Todos" },
+    { value: "Pratos", label: "Pratos" },
+    { value: "Sobremesas", label: "Sobremesas" }
+];
 
 export default function ProdutosPage() {
     const navigate = useNavigate();
@@ -12,6 +24,8 @@ export default function ProdutosPage() {
     const [busca, setBusca] = useState("");
     const [filtro, setFiltro] = useState("Todos");
 
+    const [alternandoCardapioId, setAlternandoCardapioId] = useState(null);
+
     useEffect(() => {
         let ativo = true;
 
@@ -20,7 +34,7 @@ export default function ProdutosPage() {
                 setCarregando(true);
                 setErro("");
 
-                const data = await listarCardapio();
+                const data = await listarProdutos();
 
                 if (ativo) {
                     setProdutos(data);
@@ -101,6 +115,32 @@ export default function ProdutosPage() {
         return imagem.startsWith("http") ? imagem : `${BACKEND_URL}${imagem}`;
     };
 
+    const handleToggleCardapio = async (produto) => {
+        const exibir = !produtoExibeNoCardapio(produto);
+
+        setAlternandoCardapioId(produto.id);
+        setProdutos((current) =>
+            current.map((item) =>
+                item.id === produto.id ? { ...item, exibir_no_cardapio: exibir ? 1 : 0 } : item
+            )
+        );
+
+        try {
+            await atualizarExibicaoCardapio(produto.id, exibir);
+        } catch (error) {
+            setProdutos((current) =>
+                current.map((item) =>
+                    item.id === produto.id
+                        ? { ...item, exibir_no_cardapio: produto.exibir_no_cardapio }
+                        : item
+                )
+            );
+            setErro(error.message || "Erro ao atualizar visibilidade no cardápio.");
+        } finally {
+            setAlternandoCardapioId(null);
+        }
+    };
+
     const handleExcluir = async (produto) => {
         const confirmado = window.confirm(`Excluir o produto "${produto.nome}"?`);
 
@@ -142,22 +182,21 @@ export default function ProdutosPage() {
                     </div>
                 </div>
                 <div className="rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 p-5 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm md:p-8">
-                    <div className="mb-6 flex items-center justify-between">
+                    <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <input
                             placeholder="Pesquisar produto..."
                             value={busca}
                             onChange={(event) => setBusca(event.target.value)}
                             className="w-full rounded-xl border border-[#8B4513]/20 bg-[#FAF3E7] px-5 py-3 text-[#5B3418] placeholder:text-[#8B7B70] outline-none transition focus:border-[#8B4513] md:w-80"
                         />
-                        <select
+                        <FilterSelect
+                            className="w-full md:w-52"
+                            options={FILTRO_OPTIONS}
                             value={filtro}
-                            onChange={(event) => setFiltro(event.target.value)}
-                            className="rounded-xl border border-[#8B4513]/20 bg-[#FAF3E7] px-5 py-3 text-[#5B3418] outline-none transition focus:border-[#8B4513]"
-                        >
-                            <option>Todos</option>
-                            <option>Pratos</option>
-                            <option>Sobremesas</option>
-                        </select>
+                            onChange={setFiltro}
+                            isClearable={false}
+                            placeholder="Filtrar por tipo"
+                        />
                     </div>
                     <table className="w-full">
                         <thead>
@@ -167,6 +206,7 @@ export default function ProdutosPage() {
                                 <th className="pb-5">Tipo</th>
                                 <th className="pb-5">Preço</th>
                                 <th className="pb-5">Descrição</th>
+                                <th className="pb-5 text-center">Cardápio</th>
                                 <th className="pb-5 text-center">Ações</th>
 
                             </tr>
@@ -174,25 +214,25 @@ export default function ProdutosPage() {
                         <tbody>
                             {carregando ? (
                                 <tr>
-                                    <td className="py-10 text-[#7A4A2A]" colSpan={6}>
+                                    <td className="py-10 text-[#7A4A2A]" colSpan={7}>
                                         Carregando produtos...
                                     </td>
                                 </tr>
                             ) : erro ? (
                                 <tr>
-                                    <td className="py-10 text-red-700" colSpan={6}>
+                                    <td className="py-10 text-red-700" colSpan={7}>
                                         {erro}
                                     </td>
                                 </tr>
                             ) : produtos.length === 0 ? (
                                 <tr>
-                                    <td className="py-10 text-[#7A4A2A]" colSpan={6}>
+                                    <td className="py-10 text-[#7A4A2A]" colSpan={7}>
                                         Nenhum produto cadastrado.
                                     </td>
                                 </tr>
                             ) : produtosFiltrados.length === 0 ? (
                                 <tr>
-                                    <td className="py-10 text-[#7A4A2A]" colSpan={6}>
+                                    <td className="py-10 text-[#7A4A2A]" colSpan={7}>
                                         Nenhum produto encontrado.
                                     </td>
                                 </tr>
@@ -228,9 +268,27 @@ export default function ProdutosPage() {
                                         {formatarDescricaoTabela(produto.descricao)}
                                     </td>
                                     <td>
+                                        <label className="flex cursor-pointer flex-col items-center gap-2 px-2 text-center">
+                                            <input
+                                                type="checkbox"
+                                                checked={produtoExibeNoCardapio(produto)}
+                                                disabled={alternandoCardapioId === produto.id}
+                                                onChange={() => handleToggleCardapio(produto)}
+                                                className="h-4 w-4 accent-[#8B4513] disabled:cursor-not-allowed disabled:opacity-60"
+                                            />
+                                            <span className="text-xs font-medium text-[#7A4A2A]">
+                                                {produtoExibeNoCardapio(produto) ? "No cardápio" : "Oculto"}
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td>
                                         <div className="flex justify-center gap-3">
 
-                                            <button className="rounded-lg border border-[#8B4513]/20 px-4 py-2 text-[#5B3418] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#F3E6D5] hover:text-[#3F220F] hover:shadow-[0_10px_20px_rgba(91,52,24,0.10)]">
+                                            <button
+                                                type="button"
+                                                onClick={() => navigate(`/produtos/edit/${produto.id}`)}
+                                                className="rounded-lg border border-[#8B4513]/20 px-4 py-2 text-[#5B3418] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#F3E6D5] hover:text-[#3F220F] hover:shadow-[0_10px_20px_rgba(91,52,24,0.10)]"
+                                            >
                                                 Editar
                                             </button>
 

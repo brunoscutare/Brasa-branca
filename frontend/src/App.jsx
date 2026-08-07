@@ -21,6 +21,7 @@ export default function App() {
         <Route path="/cardapio" element={<Navigate to="/homepage" replace />} />
         <Route path="/produtos" element={<ProdutosPage />} />
         <Route path="/produtos/add" element={<AddProdutos />} />
+        <Route path="/produtos/edit/:id" element={<AddProdutos />} />
         <Route
           path="/login"
           element={user ? <Navigate to="/homepage" replace /> : <LoginPage />}

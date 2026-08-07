@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
     House,
@@ -11,18 +11,57 @@ import {
     UserCog,
     CircleUserRound,
     Settings,
-    ShoppingBag,
     ShoppingCart,
-    ClipboardList,
     Heart,
     LogOut,
     LogIn
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
+const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
+const DURATION_MS = 850;
+const ITEM_SLOT = 52;
+const BAR_PADDING = 58;
+
+function MenuButton({ icon, text, open, isActive, onClick }) {
+    return (
+        <button
+            type="button"
+            title={text}
+            onClick={onClick}
+            className={`relative z-10 flex flex-none items-center justify-center gap-2 rounded-full px-3 py-2 transition-colors duration-500 ease-out ${
+                isActive
+                    ? "bg-[#F3D7B6]/14 text-[#F3D7B6] shadow-[0_0_0_1px_rgba(243,215,182,0.18)]"
+                    : "text-white hover:bg-white/5 hover:text-[#E8C39A]"
+            }`}
+        >
+            <span className="shrink-0">{icon}</span>
+            <span
+                className="grid transition-[grid-template-columns] ease-[cubic-bezier(0.16,1,0.3,1)]"
+                style={{
+                    gridTemplateColumns: open ? "1fr" : "0fr",
+                    transitionDuration: `${DURATION_MS}ms`
+                }}
+            >
+                <span
+                    className="overflow-hidden whitespace-nowrap text-sm font-medium"
+                    style={{
+                        opacity: open ? 1 : 0,
+                        transition: `opacity ${DURATION_MS}ms ${EASE}`
+                    }}
+                >
+                    {text}
+                </span>
+            </span>
+        </button>
+    );
+}
+
 export default function Topbar() {
     const [open, setOpen] = useState(false);
+    const [openWidth, setOpenWidth] = useState(400);
     const [activeSection, setActiveSection] = useState("inicio");
+    const measureRef = useRef(null);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -60,12 +99,23 @@ export default function Topbar() {
     ];
 
     const menus = [...sharedMenus, ...guestAndCommonMenus, ...(isAdmin ? adminMenus : user ? commonMenus : [])];
+    const menuKey = menus.map((item) => item.text).join("|");
+    const closedWidth = (menus.length + 1) * ITEM_SLOT + BAR_PADDING;
 
-    const getBarWidth = (isExpanded, itemCount) => {
-        const iconSlot = isExpanded ? 126 : 70;
-        const safetyPadding = isExpanded ? 120 : 96;
-        return `${Math.max(safetyPadding, itemCount * iconSlot + safetyPadding)}px`;
-    };
+    useLayoutEffect(() => {
+        const measure = () => {
+            if (!measureRef.current) return;
+
+            const measured = measureRef.current.offsetWidth;
+            const max = window.innerWidth - 24;
+            setOpenWidth(Math.min(measured, max));
+        };
+
+        measure();
+        window.addEventListener("resize", measure);
+
+        return () => window.removeEventListener("resize", measure);
+    }, [menuKey, user]);
 
     const handleLogout = () => {
         logout();
@@ -95,7 +145,7 @@ export default function Topbar() {
             },
             {
                 root: null,
-                threshold: [0.35, 0.5, 0.65],
+                threshold: [0.35, 0.5, 0.65]
             }
         );
 
@@ -140,66 +190,67 @@ export default function Topbar() {
         }
     };
 
+    const barWidth = open ? openWidth : closedWidth;
+    const authLabel = user ? "Sair" : "Login";
+
     return (
-        <div className="fixed left-1/2 top-4 z-50 -translate-x-1/2">
+        <>
             <div
-                onMouseEnter={() => setOpen(true)}
-                onMouseLeave={() => setOpen(false)}
-                style={{ width: getBarWidth(open, menus.length + 1) }}
-                className="relative flex h-16 items-center justify-between gap-1 overflow-hidden rounded-full border border-white/10 bg-[#1A100B]/75 px-3 shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-[width] duration-500 ease-[cubic-bezier(.34,1.56,.64,1)]"
+                ref={measureRef}
+                aria-hidden
+                className="pointer-events-none invisible fixed left-0 top-0 flex h-16 items-center gap-1 px-3"
             >
-                <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-b from-white/10 via-transparent to-transparent opacity-70" />
-                <div className="pointer-events-none absolute left-1/2 top-1/2 h-8 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/20 blur-xl" />
-
                 {menus.map((item) => (
-                    <button
-                        key={item.text}
-                        type="button"
-                        title={item.text}
-                        onClick={() => handleMenuClick(item)}
-                        className={`relative z-10 flex flex-none items-center justify-center gap-2 rounded-full px-3 py-2 transition-all duration-300 ${
-                            isActiveSectionMenu(item.sectionId) || isActiveMenu(item.path)
-                                ? "bg-[#F3D7B6]/14 text-[#F3D7B6] shadow-[0_0_0_1px_rgba(243,215,182,0.18)]"
-                                : "text-white hover:bg-white/5 hover:text-[#E8C39A]"
-                        }`}
-                    >
-                        <span className="shrink-0">{item.icon}</span>
-                        <span
-                            style={{
-                                maxWidth: open ? "9rem" : "0px",
-                                opacity: open ? 1 : 0,
-                                transform: open ? "translateX(0)" : "translateX(-6px)",
-                                transition: "max-width 300ms ease, opacity 220ms ease, transform 300ms ease"
-                            }}
-                            className="overflow-hidden whitespace-nowrap text-sm font-medium"
-                        >
-                            {item.text}
-                        </span>
-                    </button>
+                    <div key={item.text} className="flex flex-none items-center gap-2 rounded-full px-3 py-2">
+                        {item.icon}
+                        <span className="whitespace-nowrap text-sm font-medium">{item.text}</span>
+                    </div>
                 ))}
-
-                <div className="mx-1 h-7 w-px bg-white/10" />
-
-                <button
-                    type="button"
-                    onClick={handleAuthAction}
-                    title={user ? "Sair" : "Login"}
-                    className="relative z-10 flex flex-none items-center justify-center gap-2 rounded-full px-3 py-2 text-white transition-all duration-300 hover:bg-white/5 hover:text-[#F0B79B]"
-                >
-                    {user ? <LogOut size={20} className="shrink-0" /> : <LogIn size={20} className="shrink-0" />}
-                    <span
-                        style={{
-                            maxWidth: open ? "7rem" : "0px",
-                            opacity: open ? 1 : 0,
-                            transform: open ? "translateX(0)" : "translateX(-6px)",
-                            transition: "max-width 300ms ease, opacity 220ms ease, transform 300ms ease"
-                        }}
-                        className="overflow-hidden whitespace-nowrap text-sm font-medium"
-                    >
-                        {user ? "Sair" : "Login"}
-                    </span>
-                </button>
+                <div className="mx-1 h-7 w-px" />
+                <div className="flex flex-none items-center gap-2 rounded-full px-3 py-2">
+                    {user ? <LogOut size={20} /> : <LogIn size={20} />}
+                    <span className="whitespace-nowrap text-sm font-medium">{authLabel}</span>
+                </div>
             </div>
-        </div>
+
+            <div className="fixed left-1/2 top-4 z-50 -translate-x-1/2">
+                <div
+                    onMouseEnter={() => setOpen(true)}
+                    onMouseLeave={() => setOpen(false)}
+                    style={{
+                        width: barWidth,
+                        transition: `width ${DURATION_MS}ms ${EASE}`
+                    }}
+                    className="relative flex h-16 items-center justify-between gap-1 overflow-hidden rounded-full border border-white/10 bg-[#1A100B]/75 px-3 shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl will-change-[width]"
+                >
+                    <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-b from-white/10 via-transparent to-transparent opacity-70" />
+                    <div className="pointer-events-none absolute left-1/2 top-1/2 h-8 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/20 blur-xl" />
+
+                    <div className="relative z-10 flex min-w-0 flex-1 items-center gap-1">
+                        {menus.map((item) => (
+                            <MenuButton
+                                key={item.text}
+                                icon={item.icon}
+                                text={item.text}
+                                open={open}
+                                isActive={isActiveSectionMenu(item.sectionId) || isActiveMenu(item.path)}
+                                onClick={() => handleMenuClick(item)}
+                            />
+                        ))}
+                    </div>
+
+                    <div className="relative z-10 flex flex-none items-center gap-1">
+                        <div className="mx-1 h-7 w-px bg-white/10" />
+                        <MenuButton
+                            icon={user ? <LogOut size={20} /> : <LogIn size={20} />}
+                            text={authLabel}
+                            open={open}
+                            isActive={false}
+                            onClick={handleAuthAction}
+                        />
+                    </div>
+                </div>
+            </div>
+        </>
     );
 }
