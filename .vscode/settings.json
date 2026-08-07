@@ -5,14 +5,15 @@
     "git.confirmSync": false,
     "explorer.confirmDragAndDrop": false,
     "workbench.iconTheme": "symbols",
-    "editor.fontFamily": "JetBrains Mono",
+    "editor.fontFamily": "'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace",
     "editor.fontSize": 14,
-    "editor.lineHeight": 1.6,
+    "editor.lineHeight": 0,
+    "editor.fontLigatures": false,
     "workbench.startupEditor": "newUntitledFile",
     "editor.renderLineHighlight": "gutter",
     "explorer.compactFolders": false,
     "editor.semanticHighlighting.enabled": false,
     "claudeCode.preferredLocation": "panel",
     "workbench.colorTheme": "Liqube Dark Code",
-    "workbench.browser.openLocalhostLinks": false,
+    "workbench.browser.openLocalhostLinks": false
 }

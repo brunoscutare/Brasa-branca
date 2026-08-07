@@ -17,6 +17,7 @@ import {
     LogIn
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import { isAdmin } from "../../utils/auth";
 
 const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
 const DURATION_MS = 850;
@@ -96,14 +97,14 @@ export default function Topbar() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const isAdmin = user?.superadmin || user?.funcao === "administrador";
+    const isAdminUser = isAdmin(user);
 
     const sharedMenus = [
         { icon: <House size={20} />, text: "Início", sectionId: "inicio" },
         { icon: <UtensilsCrossed size={20} />, text: "Cardápio", sectionId: "cardapio" }
     ];
 
-    const guestAndCommonMenus = !isAdmin
+    const guestAndCommonMenus = !isAdminUser
         ? [
               { icon: <ShoppingCart size={20} />, text: "Carrinho", path: "/carrinho" },
               { icon: <Heart size={20} />, text: "Favoritos", path: "/favoritos" }
@@ -128,7 +129,7 @@ export default function Topbar() {
         { icon: <Settings size={20} />, text: "Configurações", path: "/configuracoes" }
     ];
 
-    const menus = [...sharedMenus, ...guestAndCommonMenus, ...(isAdmin ? adminMenus : user ? commonMenus : [])];
+    const menus = [...sharedMenus, ...guestAndCommonMenus, ...(isAdminUser ? adminMenus : user ? commonMenus : [])];
     const menuKey = menus.map((item) => item.text).join("|");
     const closedWidth = (menus.length + 1) * ITEM_SLOT + BAR_PADDING;
 

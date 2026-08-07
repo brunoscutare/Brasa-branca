@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { loginUsuario } from "../services/UsuarioService";
+import { homePathFor } from "../utils/auth";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function LoginPage() {
             const data = await loginUsuario(email, senha);
 
             login(data.usuario);
-            navigate("/homepage");
+            navigate(homePathFor(data.usuario));
         } catch (error) {
             setErro(error.message || "Erro ao conectar com o servidor.");
         } finally {

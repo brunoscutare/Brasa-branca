@@ -9,7 +9,7 @@ import {
 } from "../../constants/site";
 
 const CARD_CLASS =
-    "group rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 p-6 shadow-[0_18px_60px_rgba(91,52,24,0.10)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#8B4513]/28 hover:bg-[#FAF3E7]/90 hover:shadow-[0_22px_70px_rgba(91,52,24,0.18)]";
+    "group rounded-3xl border border-[#8B4513]/35 bg-[#3D2414]/88 p-6 shadow-[0_18px_60px_rgba(20,10,4,0.28)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#B88A44]/45 hover:bg-[#4A2915]/95 hover:shadow-[0_22px_70px_rgba(20,10,4,0.36)]";
 
 function FooterCard({ href, icon: Icon, title, children }) {
     return (
@@ -19,14 +19,14 @@ function FooterCard({ href, icon: Icon, title, children }) {
             rel="noopener noreferrer"
             className={CARD_CLASS}
         >
-            <div className="flex items-center gap-3 text-[#5B3418] transition-colors duration-300 group-hover:text-[#6F370F]">
+            <div className="flex items-center gap-3 text-[#FAF3E7] transition-colors duration-300 group-hover:text-[#F8D9A0]">
                 <Icon
                     className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:scale-110"
                     aria-hidden="true"
                 />
                 <h3 className="text-lg font-semibold">{title}</h3>
             </div>
-            <p className="mt-4 text-sm leading-7 text-[#7A4A2A] transition-colors duration-300 group-hover:text-[#5B3418]">
+            <p className="mt-4 text-sm leading-7 text-[#FAF3E7]/78 transition-colors duration-300 group-hover:text-[#FAF3E7]">
                 {children}
             </p>
         </a>
