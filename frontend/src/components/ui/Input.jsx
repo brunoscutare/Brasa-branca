@@ -8,10 +8,10 @@ export default function Input({
     ...props
 }) {
     const fieldClassName = [
-        "w-full rounded-xl border bg-[#FAF3E7] px-4 py-3 text-[#5B3418] outline-none transition placeholder:text-[#8B7B70]",
+        "w-full rounded-xl border bg-brand-surface px-4 py-3 text-brand-primary outline-none transition placeholder:text-brand-muted",
         error
             ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
-            : "border-[#8B4513]/20 focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/15",
+            : "border-brand-border focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/15",
         className
     ]
         .filter(Boolean)
@@ -20,7 +20,7 @@ export default function Input({
     return (
         <div className="grid gap-2">
             {label ? (
-                <label className="text-sm font-medium text-[#5B3418]">
+                <label className="text-sm font-medium text-brand-primary">
                     {label}
                     {required ? <span className="ml-1 text-red-500">*</span> : null}
                 </label>

@@ -8,9 +8,9 @@ const ICONS = {
 };
 
 const STYLES = {
-    success: "border-emerald-500/30 bg-emerald-500/10 text-emerald-800",
-    error: "border-red-500/30 bg-red-500/10 text-red-700",
-    info: "border-blue-500/30 bg-blue-500/10 text-blue-700"
+    success: "border-brand-border bg-brand-panel text-brand-primary",
+    error: "border-brand-danger/30 bg-brand-danger-surface text-brand-danger",
+    info: "border-brand-border bg-brand-surface text-brand-primary"
 };
 
 export default function Toast({ toast, onClose }) {
@@ -31,7 +31,7 @@ export default function Toast({ toast, onClose }) {
     return (
         <div className="pointer-events-none fixed bottom-6 right-6 z-[100] max-w-sm">
             <div
-                className={`flex items-start gap-3 rounded-xl border px-4 py-3 shadow-[0_12px_30px_rgba(91,52,24,0.18)] backdrop-blur-sm ${STYLES[toast.type] || STYLES.info}`}
+                className={`flex items-start gap-3 rounded-xl border px-4 py-3 shadow-[0_12px_30px_rgba(61,35,21,0.18)] backdrop-blur-sm ${STYLES[toast.type] || STYLES.info}`}
             >
                 <Icon size={20} className="mt-0.5 shrink-0" />
                 <div className="min-w-0">
