@@ -3,34 +3,20 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import multer from "multer";
-import { unlink } from "fs/promises";
+import { mkdir } from "fs/promises";
 
-import db from "./database/connection.js";
+import db, { inicializarBanco } from "./database/connection.js";
 import usuariosRoutes from "./routes/usuarios.js";
 import produtoRoutes from "./routes/produto.js";
+import cartoesRoutes from "./routes/cartoes.js";
+import pedidosRoutes from "./routes/pedidos.js";
+import iaRoutes from "./routes/ia.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const uploadsPath = path.join(__dirname, "uploads");
 const upload = multer({ dest: uploadsPath });
-
-const removerImagemDaPasta = async (imagem) => {
-    if (!imagem || !imagem.startsWith("/uploads/")) {
-        return;
-    }
-
-    const nomeArquivo = path.basename(imagem);
-    const caminhoArquivo = path.join(uploadsPath, nomeArquivo);
-
-    try {
-        await unlink(caminhoArquivo);
-    } catch (error) {
-        if (error.code !== "ENOENT") {
-            throw error;
-        }
-    }
-};
 
 app.use(cors());
 app.use(express.json());
@@ -41,6 +27,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/usuarios", usuariosRoutes);
+app.use("/usuarios", cartoesRoutes);
+app.use("/usuarios", pedidosRoutes);
+app.use("/ia", iaRoutes);
 app.use("/produtos-api", produtoRoutes);
 
 app.get("/cardapio", (req, res) => {
@@ -85,8 +74,19 @@ app.post("/cardapio", upload.single("imagem"), (req, res) => {
     });
 });
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT || 3000);
 
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+try {
+    await mkdir(uploadsPath, { recursive: true });
+    await inicializarBanco();
+
+    app.listen(PORT, () => {
+        console.log(`Servidor rodando na porta ${PORT}`);
+        console.log("Banco conectado e schema verificado com sucesso!");
+    });
+} catch (error) {
+    console.error("Não foi possível iniciar o backend.");
+    console.error(`Banco: ${error.code || error.message}`);
+    console.error("Configure DB_HOST, DB_PORT, DB_USER, DB_PASSWORD e DB_NAME antes de iniciar.");
+    process.exitCode = 1;
+}

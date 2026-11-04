@@ -7,3 +7,32 @@ body {
     background-attachment: fixed;
     color: #24150e;
 }
+
+* {
+    scrollbar-color: rgba(139, 69, 19, 0.55) #f6ebdf;
+    scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #f6ebdf;
+}
+
+*::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(139, 69, 19, 0.55);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: rgba(91, 52, 24, 0.72);
+}
+
+*::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+}

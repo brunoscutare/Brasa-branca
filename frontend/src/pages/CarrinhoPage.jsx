@@ -1,6 +1,9 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useCart } from "../contexts/CartContext";
+import { useAuth } from "../contexts/AuthContext";
+import PaymentModal from "../components/Payment/PaymentModal";
 
 const BACKEND_URL = "http://localhost:3000";
 
@@ -52,7 +55,27 @@ function QuantityStepper({ item, onIncrease, onDecrease }) {
 }
 
 export default function CarrinhoPage() {
-    const { items, changeQuantity, removeItem, totalPreco } = useCart();
+    const { user } = useAuth();
+    const { items, carregando, changeQuantity, removeItem, totalPreco, clearCart } = useCart();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [pagamentoAberto, setPagamentoAberto] = useState(false);
+
+    useEffect(() => {
+        if (!location.state?.abrirPagamento || carregando || !items.length) return;
+
+        setPagamentoAberto(true);
+        navigate(location.pathname, { replace: true, state: {} });
+    }, [carregando, items.length, location.pathname, location.state, navigate]);
+
+    const iniciarPagamento = () => {
+        if (!user) {
+            navigate("/login", { state: { from: "/carrinho", abrirPagamento: true } });
+            return;
+        }
+
+        setPagamentoAberto(true);
+    };
 
     const formatarPreco = (valor) =>
         new Intl.NumberFormat("pt-BR", {
@@ -143,6 +166,7 @@ export default function CarrinhoPage() {
                         <div className="flex justify-end">
                             <button
                                 type="button"
+                                onClick={iniciarPagamento}
                                 className="rounded-full border border-[#8B4513]/30 bg-[#FAF3E7]/50 px-5 py-2 text-xs font-medium uppercase tracking-[0.32em] text-[#5B3418] transition duration-300 hover:border-[#8B4513]/50 hover:bg-[#FAF3E7]/90"
                             >
                                 Pagar
@@ -151,6 +175,15 @@ export default function CarrinhoPage() {
                     </>
                 )}
             </div>
+
+            {pagamentoAberto ? (
+                <PaymentModal
+                    total={totalPreco}
+                    items={items}
+                    onClose={() => setPagamentoAberto(false)}
+                    onSuccess={clearCart}
+                />
+            ) : null}
         </main>
     );
 }

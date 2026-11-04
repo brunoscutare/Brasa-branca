@@ -1,5 +1,8 @@
 export function isAdmin(user) {
-    return Boolean(user?.superadmin || user?.funcao === "administrador");
+    return Boolean(
+        user?.superadmin ||
+        user?.funcao === "funcionario"
+    );
 }
 
 export function isCliente(user) {

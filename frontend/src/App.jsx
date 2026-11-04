@@ -13,14 +13,18 @@ import { homePathFor } from "./utils/auth";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
+const CadastroPage = lazy(() => import("./pages/CadastroPage"));
 const ProdutosPage = lazy(() => import("./pages/ProdutosPage"));
 const AddProdutos = lazy(() => import("./components/Produtos/AddProdutos"));
 const CarrinhoPage = lazy(() => import("./pages/CarrinhoPage"));
-
-function AuthHomeRedirect() {
-    const { user } = useAuth();
-    return <Navigate to={homePathFor(user)} replace />;
-}
+const PedidosPage = lazy(() => import("./pages/PedidosPage"));
+const PagamentosPage = lazy(() => import("./pages/PagamentosPage"));
+const PerfilPage = lazy(() => import("./pages/PerfilPage"));
+const ConfiguracoesPage = lazy(() => import("./pages/ConfiguracoesPage"));
+const ClientesPage = lazy(() => import("./pages/ClientesPage"));
+const AvaliacoesPage = lazy(() => import("./pages/AvaliacoesPage"));
+const FinanceiroPage = lazy(() => import("./pages/FinanceiroPage"));
+const FuncionariosPage = lazy(() => import("./pages/FuncionariosPage"));
 
 export default function App() {
     const { user } = useAuth();
@@ -28,7 +32,7 @@ export default function App() {
 
     return (
         <Suspense fallback={<h2>Carregando...</h2>}>
-            {location.pathname !== "/login" ? <TopBar /> : null}
+            {location.pathname !== "/login" && location.pathname !== "/cadastro" ? <TopBar /> : null}
             <Routes>
                 <Route path="/" element={<Navigate to="/homepage" replace />} />
                 <Route path="/homepage" element={<HomePage />} />
@@ -42,6 +46,18 @@ export default function App() {
                         ) : (
                             <PublicOnlyRoute>
                                 <LoginPage />
+                            </PublicOnlyRoute>
+                        )
+                    }
+                />
+                <Route
+                    path="/cadastro"
+                    element={
+                        user ? (
+                            <Navigate to={homePathFor(user)} replace />
+                        ) : (
+                            <PublicOnlyRoute>
+                                <CadastroPage />
                             </PublicOnlyRoute>
                         )
                     }
@@ -85,7 +101,7 @@ export default function App() {
                     path="/pagamentos"
                     element={
                         <ClientRoute>
-                            <Navigate to="/homepage" replace />
+                            <PagamentosPage />
                         </ClientRoute>
                     }
                 />
@@ -93,7 +109,7 @@ export default function App() {
                     path="/pedidos"
                     element={
                         <AuthRoute>
-                            <AuthHomeRedirect />
+                            <PedidosPage />
                         </AuthRoute>
                     }
                 />
@@ -101,7 +117,7 @@ export default function App() {
                     path="/perfil"
                     element={
                         <AuthRoute>
-                            <AuthHomeRedirect />
+                            <PerfilPage />
                         </AuthRoute>
                     }
                 />
@@ -109,7 +125,7 @@ export default function App() {
                     path="/configuracoes"
                     element={
                         <AuthRoute>
-                            <AuthHomeRedirect />
+                            <ConfiguracoesPage />
                         </AuthRoute>
                     }
                 />
@@ -118,7 +134,7 @@ export default function App() {
                     path="/clientes"
                     element={
                         <AdminRoute>
-                            <Navigate to="/produtos" replace />
+                            <ClientesPage />
                         </AdminRoute>
                     }
                 />
@@ -126,7 +142,7 @@ export default function App() {
                     path="/avaliacoes"
                     element={
                         <AdminRoute>
-                            <Navigate to="/produtos" replace />
+                            <AvaliacoesPage />
                         </AdminRoute>
                     }
                 />
@@ -134,7 +150,7 @@ export default function App() {
                     path="/financeiro"
                     element={
                         <AdminRoute>
-                            <Navigate to="/produtos" replace />
+                            <FinanceiroPage />
                         </AdminRoute>
                     }
                 />
@@ -142,7 +158,7 @@ export default function App() {
                     path="/funcionarios"
                     element={
                         <AdminRoute>
-                            <Navigate to="/produtos" replace />
+                            <FuncionariosPage />
                         </AdminRoute>
                     }
                 />

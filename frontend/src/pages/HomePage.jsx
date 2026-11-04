@@ -6,6 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useCart } from "../contexts/CartContext";
 import { listarCardapio } from "../services/CardapioService";
 import { isAdmin } from "../utils/auth";
+import AssistenteCardapio from "../components/Cardapio/AssistenteCardapio";
 const BACKEND_URL = "http://localhost:3000";
 
 function ehSobremesa(produto) {
@@ -263,5 +264,6 @@ export default function HomePage() {
 
             <Footer />
             <Toast toast={toast} onClose={() => setToast(null)} />
+            {mostrarCarrinho ? <AssistenteCardapio /> : null}
         </main>    );
 }

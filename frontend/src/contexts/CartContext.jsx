@@ -28,6 +28,17 @@ function lerCarrinhoVisitante() {
     return stored ? JSON.parse(stored) : [];
 }
 
+function mesclarCarrinhos(carrinhoUsuario, carrinhoVisitante) {
+    const itens = new Map();
+
+    [...carrinhoUsuario, ...carrinhoVisitante].forEach((item) => {
+        const atual = itens.get(item.id);
+        itens.set(item.id, atual ? { ...atual, quantidade: atual.quantidade + item.quantidade } : item);
+    });
+
+    return [...itens.values()];
+}
+
 export function CartProvider({ children }) {
     const { user } = useAuth();
     const [items, setItems] = useState([]);
@@ -44,16 +55,18 @@ export function CartProvider({ children }) {
             try {
                 if (user?.id) {
                     const carrinho = await buscarCarrinho(user.id);
+                    const carrinhoVisitante = lerCarrinhoVisitante();
 
                     if (ativo) {
-                        setItems(Array.isArray(carrinho) ? carrinho : []);
+                        setItems(mesclarCarrinhos(Array.isArray(carrinho) ? carrinho : [], carrinhoVisitante));
+                        localStorage.removeItem(GUEST_CART_KEY);
                     }
                 } else if (ativo) {
                     setItems(lerCarrinhoVisitante());
                 }
             } catch {
                 if (ativo) {
-                    setItems(user?.id ? [] : lerCarrinhoVisitante());
+                    setItems(user?.id ? mesclarCarrinhos([], lerCarrinhoVisitante()) : lerCarrinhoVisitante());
                 }
             } finally {
                 if (ativo) {
