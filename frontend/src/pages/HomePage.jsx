@@ -22,10 +22,10 @@ function CardProduto({
     quantidade = 0
 }) {
     return (
-        <article className="group relative overflow-hidden rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#8B4513]/28 hover:shadow-[0_22px_70px_rgba(91,52,24,0.18)]">
+        <article className="group relative overflow-hidden rounded-3xl border border-brand-border bg-brand-surface shadow-[0_18px_60px_rgba(61,35,21,0.14)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand-accent hover:shadow-[0_22px_70px_rgba(61,35,21,0.18)]">
             <div className="relative h-72 overflow-hidden">
                 {mostrarCarrinho && quantidade > 0 ? (
-                    <span className="absolute right-4 top-4 z-10 flex h-8 min-w-8 items-center justify-center rounded-full bg-[#8B4513] px-2 text-sm font-bold text-[#FAF3E7] shadow-[0_8px_24px_rgba(0,0,0,0.35)]">
+                    <span className="absolute right-4 top-4 z-10 flex h-8 min-w-8 items-center justify-center rounded-full bg-brand-primary px-2 text-sm font-bold text-brand-surface shadow-[0_8px_24px_rgba(0,0,0,0.35)]">
                         {quantidade}
                     </span>
                 ) : null}
@@ -36,15 +36,15 @@ function CardProduto({
                 />
             </div>
 
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full transform-gpu will-change-transform bg-gradient-to-t from-[#2A170A] via-[#4A2915]/95 to-transparent p-6 pt-24 text-[#FAF3E7] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 group-hover:pointer-events-auto">
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full transform-gpu will-change-transform bg-gradient-to-t from-brand-ink via-brand-ink/95 to-transparent p-6 pt-24 text-brand-surface transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 group-hover:pointer-events-auto">
                 <h3 className="text-balance text-xl font-semibold leading-tight">
                     {produto.nome}
                 </h3>
-                <p className="mt-3 text-pretty text-sm leading-6 text-[#FAF3E7]/90">
+                <p className="mt-3 text-pretty text-sm leading-6 text-brand-surface/90">
                     {produto.descricao}
                 </p>
                 <div className="mt-5 flex items-center justify-between gap-3">
-                    <span className="text-lg font-bold text-[#F8D9A0]">
+                    <span className="text-lg font-bold text-brand-cream">
                         {formatarPreco(produto.preco)}
                     </span>
                     <div className="flex items-center gap-2">
@@ -52,14 +52,14 @@ function CardProduto({
                             <button
                                 type="button"
                                 onClick={() => onAdicionarCarrinho(produto)}
-                                className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#8B4513] text-[#FAF3E7] transition hover:bg-[#F8D9A0] hover:text-[#4A2915]"
+                                className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-primary text-brand-surface transition hover:bg-brand-cream hover:text-brand-ink"
                                 title="Adicionar ao carrinho"
                                 aria-label="Adicionar ao carrinho"
                             >
                                 <ShoppingCart size={18} aria-hidden="true" />
                             </button>
                         ) : null}
-                        <span className="rounded-full bg-[#B88A44] px-3 py-1 text-xs font-semibold">
+                        <span className="rounded-full bg-brand-accent px-3 py-1 text-xs font-semibold">
                             {ehSobremesa(produto) ? "Sobremesa" : "Prato"}
                         </span>
                     </div>
@@ -183,19 +183,19 @@ export default function HomePage() {
     };
 
     return (
-        <main className="min-h-screen text-[#6F370F]">
+        <main className="min-h-screen text-brand-primary">
             <section
                 id="inicio"
                 className="flex min-h-screen scroll-mt-28 flex-col items-center px-6 pt-64 md:pt-72"
             >
                 <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 text-center">
-                    <p className="text-sm uppercase tracking-[0.4em] text-[#5B3418]">
+                    <p className="text-sm uppercase tracking-[0.4em] text-brand-primary">
                         Brasa Branca
                     </p>
-                    <h1 className="text-5xl font-semibold leading-tight text-[#5B3418] md:text-7xl">
+                    <h1 className="text-5xl font-semibold leading-tight text-brand-primary md:text-7xl">
                         Bem-vindo à sua experiência gastronômica.
                     </h1>
-                    <p className="mx-auto max-w-2xl text-base leading-7 text-[#7A4A2A] md:text-lg">
+                    <p className="mx-auto max-w-2xl text-base leading-7 text-brand-text md:text-lg">
                         Carnes nobres, sobremesas artesanais e o calor de uma brasa feita com cuidado.
                     </p>
                 </div>
@@ -203,34 +203,34 @@ export default function HomePage() {
 
             <section
                 id="cardapio"
-                className="min-h-screen scroll-mt-28 border-t border-[#8B4513]/12 px-6 py-24"
+                className="min-h-screen scroll-mt-28 border-t border-brand-border px-6 py-24"
             >
                 <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
                     <div className="max-w-2xl">
-                        <p className="text-sm uppercase tracking-[0.35em] text-[#5B3418]">
+                        <p className="text-sm uppercase tracking-[0.35em] text-brand-primary">
                             Cardápio
                         </p>
-                        <h2 className="mt-4 text-4xl font-semibold text-[#5B3418] md:text-5xl">
+                        <h2 className="mt-4 text-4xl font-semibold text-brand-primary md:text-5xl">
                             Pratos principais e sobremesas do Brasa Branca.
                         </h2>
-                        <p className="mt-4 text-base leading-7 text-[#7A4A2A]">
+                        <p className="mt-4 text-base leading-7 text-brand-text">
                             Os pratos vêm primeiro; as sobremesas ficam logo abaixo.
                         </p>
                     </div>
 
                     {carregando ? (
-                        <p className="text-[#7A4A2A]">Carregando cardápio...</p>
+                        <p className="text-brand-text">Carregando cardápio...</p>
                     ) : erro ? (
-                        <p className="text-red-700">{erro}</p>
+                        <p className="text-brand-danger">{erro}</p>
                     ) : produtos.length === 0 ? (
-                        <p className="text-[#7A4A2A]">Nenhum item disponível no cardápio no momento.</p>
+                        <p className="text-brand-text">Nenhum item disponível no cardápio no momento.</p>
                     ) : (
                         <div className="flex flex-col gap-14">
                             <div className="flex flex-col gap-6">
                                 <div>
-                                    <h3 className="text-2xl font-semibold text-[#5B3418]">Pratos</h3>
+                                    <h3 className="text-2xl font-semibold text-brand-primary">Pratos</h3>
                                     {pratos.length === 0 ? (
-                                        <p className="mt-2 text-[#7A4A2A]">Nenhum prato disponível no momento.</p>
+                                        <p className="mt-2 text-brand-text">Nenhum prato disponível no momento.</p>
                                     ) : null}
                                 </div>
                                 <GradeProdutos
@@ -244,9 +244,9 @@ export default function HomePage() {
 
                             <div className="flex flex-col gap-6">
                                 <div>
-                                    <h3 className="text-2xl font-semibold text-[#5B3418]">Sobremesas</h3>
+                                    <h3 className="text-2xl font-semibold text-brand-primary">Sobremesas</h3>
                                     {sobremesas.length === 0 ? (
-                                        <p className="mt-2 text-[#7A4A2A]">Nenhuma sobremesa disponível no momento.</p>
+                                        <p className="mt-2 text-brand-text">Nenhuma sobremesa disponível no momento.</p>
                                     ) : null}
                                 </div>
                                 <GradeProdutos
