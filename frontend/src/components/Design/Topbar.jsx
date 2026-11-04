@@ -60,8 +60,8 @@ function MenuButton({ icon, text, open, isActive, onClick }) {
             onClick={onClick}
             className={`relative z-10 flex flex-none items-center justify-center gap-2 rounded-full px-3 py-2 transition-colors duration-500 ease-out ${
                 isActive
-                    ? "bg-[#F3D7B6]/14 text-[#F3D7B6] shadow-[0_0_0_1px_rgba(243,215,182,0.18)]"
-                    : "text-white hover:bg-white/5 hover:text-[#E8C39A]"
+                    ? "bg-brand-on-dark/12 text-brand-on-dark shadow-[0_0_0_1px_rgba(255,243,228,0.18)]"
+                    : "text-brand-on-dark hover:bg-brand-on-dark/5 hover:text-brand-background"
             }`}
         >
             <span className="shrink-0">{icon}</span>
@@ -263,10 +263,10 @@ export default function Topbar() {
                         width: barWidth,
                         transition: `width ${DURATION_MS}ms ${EASE}`
                     }}
-                    className="relative flex h-16 items-center justify-between gap-1 overflow-hidden rounded-full border border-white/10 bg-[#1A100B]/75 px-3 shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl will-change-[width]"
+                    className="relative flex h-16 items-center justify-between gap-1 overflow-hidden rounded-full border border-brand-on-dark/10 bg-brand-ink/95 px-3 shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl will-change-[width]"
                 >
                     <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-b from-white/10 via-transparent to-transparent opacity-70" />
-                    <div className="pointer-events-none absolute left-1/2 top-1/2 h-8 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/20 blur-xl" />
+                    <div className="pointer-events-none absolute left-1/2 top-1/2 h-8 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-ink/20 blur-xl" />
 
                     <div className="relative z-10 flex min-w-0 flex-1 items-center gap-1">
                         {menus.map((item) => (
@@ -282,7 +282,7 @@ export default function Topbar() {
                     </div>
 
                     <div className="relative z-10 flex flex-none items-center gap-1">
-                        <div className="mx-1 h-7 w-px bg-white/10" />
+                        <div className="mx-1 h-7 w-px bg-brand-on-dark/10" />
                         <MenuButton
                             icon={user ? <LogOut size={20} /> : <LogIn size={20} />}
                             text={authLabel}

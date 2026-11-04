@@ -9,7 +9,7 @@ import {
 } from "../../constants/site";
 
 const CARD_CLASS =
-    "group rounded-3xl border border-[#8B4513]/35 bg-[#3D2414]/88 p-6 shadow-[0_18px_60px_rgba(20,10,4,0.28)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#B88A44]/45 hover:bg-[#4A2915]/95 hover:shadow-[0_22px_70px_rgba(20,10,4,0.36)]";
+    "group rounded-3xl border border-brand-border bg-brand-ink/88 p-6 shadow-[0_18px_60px_rgba(61,35,21,0.28)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand-accent/45 hover:bg-brand-ink/95 hover:shadow-[0_22px_70px_rgba(61,35,21,0.36)]";
 
 function FooterCard({ href, icon: Icon, title, children }) {
     return (
@@ -19,14 +19,14 @@ function FooterCard({ href, icon: Icon, title, children }) {
             rel="noopener noreferrer"
             className={CARD_CLASS}
         >
-            <div className="flex items-center gap-3 text-[#FAF3E7] transition-colors duration-300 group-hover:text-[#F8D9A0]">
+            <div className="flex items-center gap-3 text-brand-surface transition-colors duration-300 group-hover:text-brand-cream">
                 <Icon
                     className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:scale-110"
                     aria-hidden="true"
                 />
                 <h3 className="text-lg font-semibold">{title}</h3>
             </div>
-            <p className="mt-4 text-sm leading-7 text-[#FAF3E7]/78 transition-colors duration-300 group-hover:text-[#FAF3E7]">
+            <p className="mt-4 text-sm leading-7 text-brand-surface/78 transition-colors duration-300 group-hover:text-brand-surface">
                 {children}
             </p>
         </a>
@@ -37,14 +37,14 @@ export default function Footer() {
     return (
         <footer
             id="contato"
-            className="scroll-mt-28 border-t border-[#8B4513]/12 px-6 py-16"
+            className="scroll-mt-28 border-t border-brand-border px-6 py-16"
         >
             <div className="mx-auto flex w-full max-w-7xl flex-col gap-12">
                 <div className="max-w-2xl">
-                    <p className="text-sm uppercase tracking-[0.35em] text-[#5B3418]">
+                    <p className="text-sm uppercase tracking-[0.35em] text-brand-primary">
                         Contato
                     </p>
-                    <h2 className="mt-4 text-3xl font-semibold text-[#5B3418] md:text-4xl">
+                    <h2 className="mt-4 text-3xl font-semibold text-brand-primary md:text-4xl">
                         Venha nos visitar ou fale conosco.
                     </h2>
                 </div>
@@ -63,7 +63,7 @@ export default function Footer() {
                     </FooterCard>
                 </div>
 
-                <p className="text-center text-sm text-[#7A4A2A]/80">
+                <p className="text-center text-sm text-brand-text/80">
                     © {new Date().getFullYear()} Brasa Branca
                 </p>
             </div>
