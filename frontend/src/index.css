@@ -1,15 +1,52 @@
 @import "tailwindcss";
 
+@theme static {
+    --color-brand-background: #EED8BF;
+    --color-brand-surface: #FFF8EF;
+    --color-brand-field: #FFFFFF;
+    --color-brand-panel: #F3E6D5;
+    --color-brand-primary: #5B3418;
+    --color-brand-ink: #3D2315;
+    --color-brand-text: #7A4A2A;
+    --color-brand-muted: #9B8069;
+    --color-brand-border: #E7CFB4;
+    --color-brand-input-border: #E4D1BE;
+    --color-brand-border-strong: #DCC2A6;
+    --color-brand-placeholder: #AC9580;
+    --color-brand-accent: #D98C3F;
+    --color-brand-cream: #F8D9A0;
+    --color-brand-on-dark: #FFF3E4;
+    --color-brand-on-dark-muted: #D5B89A;
+    --color-brand-danger: #B42318;
+    --color-brand-danger-surface: #FFF0EB;
+}
+
+:root {
+    color-scheme: light;
+    background-color: var(--color-brand-background);
+    color: var(--color-brand-ink);
+    accent-color: var(--color-brand-accent);
+}
+
 body {
-    background:
-        radial-gradient(circle at top, rgba(139, 69, 19, 0.12), transparent 46%),
-        linear-gradient(180deg, #f4e4d3 0%, #e8c9a8 48%, #d9ab7b 100%);
-    background-attachment: fixed;
-    color: #24150e;
+    min-width: 320px;
+    min-height: 100vh;
+    background-color: var(--color-brand-background);
+    color: var(--color-brand-ink);
+}
+
+::selection {
+    background-color: var(--color-brand-primary);
+    color: var(--color-brand-on-dark);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--color-brand-placeholder);
 }
 
 * {
-    scrollbar-color: rgba(139, 69, 19, 0.55) #f6ebdf;
+    scrollbar-color: var(--color-brand-border-strong) var(--color-brand-surface);
     scrollbar-width: thin;
 }
 
@@ -19,16 +56,16 @@ body {
 }
 
 *::-webkit-scrollbar-track {
-    background: #f6ebdf;
+    background: var(--color-brand-surface);
 }
 
 *::-webkit-scrollbar-thumb {
     border-radius: 999px;
-    background: rgba(139, 69, 19, 0.55);
+    background: var(--color-brand-border-strong);
 }
 
 *::-webkit-scrollbar-thumb:hover {
-    background: rgba(91, 52, 24, 0.72);
+    background: var(--color-brand-primary);
 }
 
 *::-webkit-scrollbar-button {
