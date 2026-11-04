@@ -17,10 +17,10 @@ import { criarPedido } from "../../services/PedidoService";
 import { buscarPerfil } from "../../services/PerfilService";
 
 const BRANDS = [
-    { id: "visa", name: "Visa", detail: "Crédito e débito", tone: "border-[#1a4b9b]/20 bg-[#edf4ff] text-[#173d80]" },
-    { id: "mastercard", name: "Mastercard", detail: "Crédito e débito", tone: "border-[#e35b32]/20 bg-[#fff4ed] text-[#9a321e]" },
-    { id: "elo", name: "Elo", detail: "Crédito e débito", tone: "border-[#111827]/15 bg-[#f6f6f6] text-[#111827]" },
-    { id: "amex", name: "American Express", detail: "Crédito", tone: "border-[#1677b9]/20 bg-[#edfaff] text-[#12628e]" },
+    { id: "visa", name: "Visa", detail: "Crédito e débito", tone: "border-brand-border bg-brand-surface text-brand-primary" },
+    { id: "mastercard", name: "Mastercard", detail: "Crédito e débito", tone: "border-brand-border bg-brand-surface text-brand-primary" },
+    { id: "elo", name: "Elo", detail: "Crédito e débito", tone: "border-brand-border bg-brand-surface text-brand-primary" },
+    { id: "amex", name: "American Express", detail: "Crédito", tone: "border-brand-border bg-brand-surface text-brand-primary" },
 ];
 
 function formatarPreco(valor) {
@@ -72,16 +72,16 @@ function BrandMark({ brand, large = false }) {
 const Field = forwardRef(function Field({ label, hint, error, ...props }, ref) {
     return (
         <label className="block">
-            <span className="mb-2 flex items-center justify-between gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#6f513b]">
+            <span className="mb-2 flex items-center justify-between gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-brand-text">
                 <span>{label}</span>
-                {hint ? <span className="normal-case tracking-normal text-[#9b8069]">{hint}</span> : null}
+                {hint ? <span className="normal-case tracking-normal text-brand-muted">{hint}</span> : null}
             </span>
             <input
                 {...props}
                 ref={ref}
-                className={`w-full rounded-xl border bg-white/75 px-4 py-3 text-sm text-[#3f2415] outline-none transition placeholder:text-[#b8a18c] focus:border-[#8b4513]/60 focus:bg-white focus:ring-4 focus:ring-[#8b4513]/10 ${error ? "border-red-400" : "border-[#8b4513]/18"}`}
+                className={`w-full rounded-xl border bg-brand-field px-4 py-3 text-sm text-brand-ink outline-none transition placeholder:text-brand-placeholder focus:border-brand-accent focus:bg-brand-surface focus:ring-4 focus:ring-brand-accent/10 ${error ? "border-brand-danger" : "border-brand-border"}`}
             />
-            {error ? <span className="mt-1 block text-xs text-red-600">{error}</span> : null}
+            {error ? <span className="mt-1 block text-xs text-brand-danger">{error}</span> : null}
         </label>
     );
 });
@@ -93,20 +93,20 @@ function CardPreview({ brand, form }) {
     const expiry = form.validade || "MM/AA";
 
     return (
-        <div className="relative overflow-hidden rounded-2xl bg-[linear-gradient(135deg,#3a2117_0%,#7a401e_52%,#b97942_100%)] p-5 text-[#fff8ef] shadow-[0_20px_45px_rgba(76,39,17,0.28)]">
-            <div className="absolute -right-16 -top-20 h-48 w-48 rounded-full border border-white/10" />
-            <div className="absolute -bottom-24 -left-20 h-52 w-52 rounded-full border border-white/10" />
+        <div className="relative overflow-hidden rounded-2xl bg-brand-ink p-5 text-brand-surface shadow-[0_20px_45px_rgba(61,35,21,0.28)]">
+            <div className="absolute -right-16 -top-20 h-48 w-48 rounded-full border border-brand-on-dark/10" />
+            <div className="absolute -bottom-24 -left-20 h-52 w-52 rounded-full border border-brand-on-dark/10" />
             <div className="relative flex min-h-[168px] flex-col justify-between">
                 <div className="flex items-start justify-between gap-4">
                     <div className="flex items-center gap-2">
-                        <span className="h-7 w-9 rounded-md border border-white/30 bg-gradient-to-br from-[#f5d790] to-[#a8792c]" />
-                        <span className="text-xs text-white/60">•••</span>
+                        <span className="h-7 w-9 rounded-md border border-brand-on-dark/30 bg-brand-cream" />
+                        <span className="text-xs text-brand-on-dark-muted">•••</span>
                     </div>
-                    <span className="text-white/90"><BrandMark brand={brand} large /></span>
+                    <span className="text-brand-on-dark"><BrandMark brand={brand} large /></span>
                 </div>
                 <div>
-                    <p className="font-mono text-lg tracking-[0.12em] text-white/95">{number}</p>
-                    <div className="mt-4 flex items-end justify-between gap-4 text-[0.58rem] uppercase tracking-[0.16em] text-white/65">
+                    <p className="font-mono text-lg tracking-[0.12em] text-brand-on-dark">{number}</p>
+                    <div className="mt-4 flex items-end justify-between gap-4 text-[0.58rem] uppercase tracking-[0.16em] text-brand-on-dark-muted">
                         <span className="truncate">{holder}</span>
                         <span className="shrink-0">{expiry}</span>
                     </div>
@@ -339,7 +339,7 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
 
     return (
         <div
-            className="fixed inset-0 z-[120] flex items-end justify-center bg-[#29170d]/65 p-0 backdrop-blur-sm sm:items-center sm:p-5"
+            className="fixed inset-0 z-[120] flex items-end justify-center bg-brand-ink/60 p-0 backdrop-blur-sm sm:items-center sm:p-5"
             role="presentation"
             onMouseDown={(event) => {
                 if (event.target === event.currentTarget && !processing) onClose();
@@ -349,16 +349,16 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="payment-title"
-                className="max-h-[94vh] w-full max-w-5xl overflow-y-auto rounded-t-[2rem] border border-[#8b4513]/15 bg-[#fbf5ed] shadow-[0_28px_90px_rgba(49,24,8,0.32)] sm:rounded-[2rem]"
+                className="max-h-[94vh] w-full max-w-5xl overflow-y-auto rounded-t-[2rem] border border-brand-border bg-brand-surface shadow-[0_28px_90px_rgba(61,35,21,0.32)] sm:rounded-[2rem]"
             >
-                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#8b4513]/12 bg-[#fbf5ed]/95 px-5 py-4 backdrop-blur md:px-8">
+                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-brand-border bg-brand-surface px-5 py-4 backdrop-blur md:px-8">
                     <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#5b3418] text-[#f7dfc4]">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-primary text-brand-panel">
                             <LockKeyhole size={18} />
                         </div>
                         <div>
-                            <h2 id="payment-title" className="font-semibold text-[#4c2a17]">Pagamento seguro</h2>
-                            <p className="text-xs text-[#92745c]">Finalize seu pedido Brasa Branca</p>
+                            <h2 id="payment-title" className="font-semibold text-brand-ink">Pagamento seguro</h2>
+                            <p className="text-xs text-brand-muted">Finalize seu pedido Brasa Branca</p>
                         </div>
                     </div>
                     <button
@@ -366,7 +366,7 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
                         aria-label="Fechar pagamento"
                         onClick={onClose}
                         disabled={processing}
-                        className="rounded-full p-2 text-[#7a5a43] transition hover:bg-[#8b4513]/10 hover:text-[#4c2a17] disabled:cursor-not-allowed disabled:opacity-40"
+                        className="rounded-full p-2 text-brand-text transition hover:bg-brand-primary/10 hover:text-brand-ink disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         <X size={20} />
                     </button>
@@ -374,21 +374,21 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
 
                 {completed ? (
                     <div className="flex flex-col items-center px-6 py-16 text-center md:px-12">
-                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-brand-panel text-brand-primary">
                             <Check size={38} strokeWidth={2.5} />
                         </div>
-                        <p className="mt-6 text-xs font-semibold uppercase tracking-[0.28em] text-emerald-700">Pagamento aprovado</p>
-                        <h3 className="mt-3 text-3xl font-semibold text-[#4c2a17]">Pedido recebido!</h3>
-                        <p className="mt-3 max-w-md text-sm leading-7 text-[#7a5a43]">
+                        <p className="mt-6 text-xs font-semibold uppercase tracking-[0.28em] text-brand-primary">Pagamento aprovado</p>
+                        <h3 className="mt-3 text-3xl font-semibold text-brand-ink">Pedido recebido!</h3>
+                        <p className="mt-3 max-w-md text-sm leading-7 text-brand-text">
                             Seu pagamento foi registrado e o pedido já está disponível no seu histórico.
                         </p>
-                        <div className="mt-7 rounded-2xl border border-[#8b4513]/12 bg-white/60 px-6 py-4 text-sm text-[#5b3418]">
+                        <div className="mt-7 rounded-2xl border border-brand-border bg-brand-surface px-6 py-4 text-sm text-brand-primary">
                             Código do pedido <strong className="ml-1">#{pedidoCriado?.id || "—"}</strong>
                         </div>
                         <button
                             type="button"
                             onClick={onClose}
-                            className="mt-8 rounded-full bg-[#5b3418] px-7 py-3 text-sm font-semibold text-[#fff8ef] transition hover:bg-[#7a401e]"
+                            className="mt-8 rounded-full bg-brand-primary px-7 py-3 text-sm font-semibold text-brand-surface transition hover:bg-brand-ink"
                         >
                             Voltar para o carrinho
                         </button>
@@ -397,40 +397,40 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
                     <div className="grid gap-8 p-5 md:grid-cols-[1.2fr_0.8fr] md:p-8">
                         <div>
                             <div className="mb-7 flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em]">
-                                <span className={step === "address" ? "text-[#5b3418]" : "text-[#a98e75]"}>1. Endereço</span>
-                                <span className="h-px w-8 bg-[#8b4513]/18" />
-                                <span className={step === "brand" ? "text-[#5b3418]" : "text-[#a98e75]"}>2. Bandeira</span>
-                                <span className="h-px w-8 bg-[#8b4513]/18" />
-                                <span className={step === "card" ? "text-[#5b3418]" : "text-[#a98e75]"}>3. Cartão</span>
+                                <span className={step === "address" ? "text-brand-primary" : "text-brand-muted"}>1. Endereço</span>
+                                <span className="h-px w-8 bg-brand-primary/18" />
+                                <span className={step === "brand" ? "text-brand-primary" : "text-brand-muted"}>2. Bandeira</span>
+                                <span className="h-px w-8 bg-brand-primary/18" />
+                                <span className={step === "card" ? "text-brand-primary" : "text-brand-muted"}>3. Cartão</span>
                             </div>
 
                             {step === "address" ? (
                                 <form onSubmit={handleAddressSubmit} autoComplete="off">
                                     <div className="mb-6">
-                                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#9b8069]">Onde entregar?</p>
-                                        <h3 className="mt-2 text-2xl font-semibold text-[#4c2a17]">Informe o endereço de entrega</h3>
-                                        <p className="mt-2 text-sm leading-6 text-[#846a54]">Usaremos este endereço para organizar a entrega do seu pedido.</p>
+                                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-muted">Onde entregar?</p>
+                                        <h3 className="mt-2 text-2xl font-semibold text-brand-ink">Informe o endereço de entrega</h3>
+                                        <p className="mt-2 text-sm leading-6 text-brand-text">Usaremos este endereço para organizar a entrega do seu pedido.</p>
                                     </div>
 
                                     {enderecoSalvo ? (
                                         <div className="mb-6">
                                             <div className="mb-3 flex items-center justify-between gap-3">
-                                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9b8069]">Endereço salvo</p>
-                                                <button type="button" onClick={modoEndereco === "salvo" ? escolherOutroEndereco : selecionarEnderecoSalvo} className="text-xs font-semibold text-[#8b4513] underline-offset-4 hover:underline">
+                                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-muted">Endereço salvo</p>
+                                                <button type="button" onClick={modoEndereco === "salvo" ? escolherOutroEndereco : selecionarEnderecoSalvo} className="text-xs font-semibold text-brand-primary underline-offset-4 hover:underline">
                                                     {modoEndereco === "salvo" ? "Usar outro endereço" : "Usar endereço salvo"}
                                                 </button>
                                             </div>
                                             <button
                                                 type="button"
                                                 onClick={selecionarEnderecoSalvo}
-                                                className={`flex w-full items-start gap-3 rounded-2xl border p-4 text-left transition ${modoEndereco === "salvo" ? "border-[#8b4513] bg-[#f5e6d4] shadow-[0_8px_22px_rgba(91,52,24,0.08)]" : "border-[#8b4513]/18 bg-white/55 hover:border-[#8b4513]/45"}`}
+                                                className={`flex w-full items-start gap-3 rounded-2xl border p-4 text-left transition ${modoEndereco === "salvo" ? "border-brand-primary bg-brand-panel shadow-[0_8px_22px_rgba(61,35,21,0.08)]" : "border-brand-border bg-brand-surface hover:border-brand-accent"}`}
                                             >
-                                                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#5b3418] text-[#fff8ef]"><MapPin size={17} /></span>
+                                                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-primary text-brand-surface"><MapPin size={17} /></span>
                                                 <span className="min-w-0 flex-1">
-                                                    <strong className="block text-sm text-[#4c2a17]">{enderecoSalvo.rua}, {enderecoSalvo.numero}</strong>
-                                                    <span className="mt-1 block text-xs leading-5 text-[#846a54]">{enderecoSalvo.bairro} · {enderecoSalvo.cidade}/{enderecoSalvo.estado} · CEP {enderecoSalvo.cep}</span>
+                                                    <strong className="block text-sm text-brand-ink">{enderecoSalvo.rua}, {enderecoSalvo.numero}</strong>
+                                                    <span className="mt-1 block text-xs leading-5 text-brand-text">{enderecoSalvo.bairro} · {enderecoSalvo.cidade}/{enderecoSalvo.estado} · CEP {enderecoSalvo.cep}</span>
                                                 </span>
-                                                <span className={`mt-1 h-4 w-4 shrink-0 rounded-full border ${modoEndereco === "salvo" ? "border-[#8b4513] bg-[#8b4513] shadow-[inset_0_0_0_3px_#f5e6d4]" : "border-[#b99b80]"}`} />
+                                                <span className={`mt-1 h-4 w-4 shrink-0 rounded-full border ${modoEndereco === "salvo" ? "border-brand-border bg-brand-primary shadow-[inset_0_0_0_3px_var(--color-brand-panel)]" : "border-brand-placeholder"}`} />
                                             </button>
                                         </div>
                                     ) : null}
@@ -447,26 +447,26 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
                                             <Field label="Cidade" placeholder="Araraquara" value={endereco.cidade} onChange={(event) => updateEndereco("cidade", event.target.value)} autoComplete="new-password" error={enderecoErrors.cidade} />
                                         </div>
                                         <Field label="Estado" placeholder="SP" value={endereco.estado} onChange={(event) => updateEndereco("estado", event.target.value.toUpperCase().slice(0, 2))} autoComplete="new-password" maxLength={2} error={enderecoErrors.estado} />
-                                    </div> : <div className="rounded-2xl border border-emerald-500/20 bg-emerald-50/55 p-4 text-sm text-emerald-800"><strong>Endereço selecionado.</strong><p className="mt-1 text-xs leading-5">Confira os dados acima e continue para escolher o pagamento.</p></div>}
+                                    </div> : <div className="rounded-2xl border border-brand-border bg-brand-panel p-4 text-sm text-brand-primary"><strong>Endereço selecionado.</strong><p className="mt-1 text-xs leading-5">Confira os dados acima e continue para escolher o pagamento.</p></div>}
 
-                                    <button type="submit" className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-[#5b3418] px-5 py-3.5 text-sm font-semibold text-[#fff8ef] transition hover:bg-[#7a401e]">
+                                    <button type="submit" className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-5 py-3.5 text-sm font-semibold text-brand-surface transition hover:bg-brand-ink">
                                         Continuar para pagamento <ChevronRight size={17} />
                                     </button>
                                 </form>
                             ) : step === "brand" ? (
                                 <div>
                                     <div className="mb-6">
-                                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#9b8069]">Escolha como pagar</p>
-                                        <h3 className="mt-2 text-2xl font-semibold text-[#4c2a17]">Qual é a bandeira do seu cartão?</h3>
-                                        <p className="mt-2 text-sm leading-6 text-[#846a54]">Você poderá preencher os dados do cartão na próxima etapa.</p>
+                                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-muted">Escolha como pagar</p>
+                                        <h3 className="mt-2 text-2xl font-semibold text-brand-ink">Qual é a bandeira do seu cartão?</h3>
+                                        <p className="mt-2 text-sm leading-6 text-brand-text">Você poderá preencher os dados do cartão na próxima etapa.</p>
                                     </div>
 
-                                    {carregandoCartoes ? <p className="mb-5 text-sm text-[#92745c]">Carregando seus cartões salvos...</p> : null}
+                                    {carregandoCartoes ? <p className="mb-5 text-sm text-brand-muted">Carregando seus cartões salvos...</p> : null}
                                     {cartoesSalvos.length ? (
                                         <div className="mb-7">
                                             <div className="mb-3 flex items-center justify-between gap-3">
-                                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9b8069]">Seus cartões</p>
-                                                <span className="text-xs text-[#a0846b]">Escolha um para pagar</span>
+                                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-muted">Seus cartões</p>
+                                                <span className="text-xs text-brand-muted">Escolha um para pagar</span>
                                             </div>
                                             <div className="grid gap-3">
                                                 {cartoesSalvos.map((cartao) => {
@@ -476,14 +476,14 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
                                                             type="button"
                                                             key={cartao.id}
                                                             onClick={() => setCartaoSalvoSelecionado(cartao)}
-                                                            className={`flex items-center gap-4 rounded-2xl border p-4 text-left transition ${selecionado ? "border-[#8b4513] bg-[#f3e1cd] shadow-[0_10px_22px_rgba(91,52,24,0.1)]" : "border-[#8b4513]/15 bg-white/55 hover:border-[#8b4513]/40 hover:bg-white/80"}`}
+                                                            className={`flex items-center gap-4 rounded-2xl border p-4 text-left transition ${selecionado ? "border-brand-primary bg-brand-panel shadow-[0_10px_22px_rgba(61,35,21,0.1)]" : "border-brand-border bg-brand-surface hover:border-brand-accent hover:bg-brand-surface"}`}
                                                         >
-                                                            <span className="flex h-10 w-14 items-center justify-center rounded-xl bg-[#5b3418] text-xs text-[#fff8ef]"><BrandMark brand={cartao.bandeira} /></span>
+                                                            <span className="flex h-10 w-14 items-center justify-center rounded-xl bg-brand-primary text-xs text-brand-surface"><BrandMark brand={cartao.bandeira} /></span>
                                                             <span className="min-w-0 flex-1">
-                                                                <span className="block text-sm font-semibold text-[#4c2a17]">{cartao.bandeira} •••• {cartao.ultimos_digitos}</span>
-                                                                <span className="mt-1 block truncate text-xs uppercase tracking-[0.12em] text-[#92745c]">{cartao.nome}</span>
+                                                                <span className="block text-sm font-semibold text-brand-ink">{cartao.bandeira} •••• {cartao.ultimos_digitos}</span>
+                                                                <span className="mt-1 block truncate text-xs uppercase tracking-[0.12em] text-brand-muted">{cartao.nome}</span>
                                                             </span>
-                                                            <span className={`flex h-5 w-5 items-center justify-center rounded-full border ${selecionado ? "border-[#8b4513] bg-[#8b4513] text-white" : "border-[#8b4513]/25 text-transparent"}`} aria-hidden="true">✓</span>
+                                                            <span className={`flex h-5 w-5 items-center justify-center rounded-full border ${selecionado ? "border-brand-border bg-brand-primary text-brand-on-dark" : "border-brand-border text-transparent"}`} aria-hidden="true">✓</span>
                                                         </button>
                                                     );
                                                 })}
@@ -493,14 +493,14 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
                                                     type="button"
                                                     onClick={() => finalizarPedido({ cartao_id: cartaoSalvoSelecionado.id })}
                                                     disabled={processing}
-                                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#5b3418] px-5 py-3.5 text-sm font-semibold text-[#fff8ef] transition hover:bg-[#7a401e] disabled:cursor-wait disabled:opacity-75"
+                                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-5 py-3.5 text-sm font-semibold text-brand-surface transition hover:bg-brand-ink disabled:cursor-wait disabled:opacity-75"
                                                 >
                                                     {processing ? "Processando pagamento..." : `Pagar com •••• ${cartaoSalvoSelecionado.ultimos_digitos}`}
                                                     {!processing ? <LockKeyhole size={16} /> : null}
                                                 </button>
                                             ) : null}
-                                            {submitError ? <p className="mt-4 rounded-xl border border-red-400/30 bg-red-50/70 px-4 py-3 text-sm text-red-700">{submitError}</p> : null}
-                                            <div className="mt-7 flex items-center gap-3 text-xs uppercase tracking-[0.18em] text-[#a0846b]"><span className="h-px flex-1 bg-[#8b4513]/12" /><span>ou adicione outro cartão</span><span className="h-px flex-1 bg-[#8b4513]/12" /></div>
+                                            {submitError ? <p className="mt-4 rounded-xl border border-brand-danger/30 bg-brand-danger-surface px-4 py-3 text-sm text-brand-danger">{submitError}</p> : null}
+                                            <div className="mt-7 flex items-center gap-3 text-xs uppercase tracking-[0.18em] text-brand-muted"><span className="h-px flex-1 bg-brand-primary/12" /><span>ou adicione outro cartão</span><span className="h-px flex-1 bg-brand-primary/12" /></div>
                                         </div>
                                     ) : null}
 
@@ -510,7 +510,7 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
                                                 type="button"
                                                 key={item.id}
                                                 onClick={() => handleBrandSelect(item.id)}
-                                                className={`group flex items-center justify-between gap-4 rounded-2xl border p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:border-[#8b4513]/45 hover:shadow-[0_12px_25px_rgba(91,52,24,0.1)] ${item.tone}`}
+                                                className={`group flex items-center justify-between gap-4 rounded-2xl border p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:border-brand-accent hover:shadow-[0_12px_25px_rgba(61,35,21,0.1)] ${item.tone}`}
                                             >
                                                 <span>
                                                     <span className="flex h-9 min-w-[5.5rem] items-center"><BrandMark brand={item.id} /></span>
@@ -521,8 +521,8 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
                                         ))}
                                     </div>
 
-                                    <div className="mt-8 flex items-start gap-3 rounded-2xl border border-[#8b4513]/12 bg-white/45 p-4 text-sm text-[#846a54]">
-                                        <ShieldCheck size={19} className="mt-0.5 shrink-0 text-[#8b4513]" />
+                                    <div className="mt-8 flex items-start gap-3 rounded-2xl border border-brand-border bg-brand-surface p-4 text-sm text-brand-text">
+                                        <ShieldCheck size={19} className="mt-0.5 shrink-0 text-brand-primary" />
                                         <p>Seus dados ficam protegidos com criptografia de ponta a ponta.</p>
                                     </div>
                                 </div>
@@ -531,15 +531,15 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
                                     <button
                                         type="button"
                                         onClick={() => setStep("brand")}
-                                        className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-[#7a5a43] transition hover:text-[#4c2a17]"
+                                        className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-text transition hover:text-brand-ink"
                                     >
                                         <ArrowLeft size={16} /> Alterar bandeira
                                     </button>
                                     <div className="mb-6 flex items-center gap-3">
-                                        <div className="flex h-11 min-w-[4.5rem] items-center justify-center rounded-xl border border-[#8b4513]/12 bg-white/80 text-[#5b3418]"><BrandMark brand={brand} /></div>
+                                        <div className="flex h-11 min-w-[4.5rem] items-center justify-center rounded-xl border border-brand-border bg-brand-surface text-brand-primary"><BrandMark brand={brand} /></div>
                                         <div>
-                                            <p className="text-xs uppercase tracking-[0.18em] text-[#a0846b]">Cartão selecionado</p>
-                                            <p className="mt-1 font-semibold text-[#4c2a17]">{selectedBrand?.name}</p>
+                                            <p className="text-xs uppercase tracking-[0.18em] text-brand-muted">Cartão selecionado</p>
+                                            <p className="mt-1 font-semibold text-brand-ink">{selectedBrand?.name}</p>
                                         </div>
                                     </div>
 
@@ -589,12 +589,12 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
                                         </div>
                                     </div>
 
-                                    {submitError ? <p className="mt-4 rounded-xl border border-red-400/30 bg-red-50/70 px-4 py-3 text-sm text-red-700">{submitError}</p> : null}
+                                    {submitError ? <p className="mt-4 rounded-xl border border-brand-danger/30 bg-brand-danger-surface px-4 py-3 text-sm text-brand-danger">{submitError}</p> : null}
 
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-[#5b3418] px-5 py-3.5 text-sm font-semibold text-[#fff8ef] shadow-[0_10px_25px_rgba(91,52,24,0.18)] transition hover:bg-[#7a401e] disabled:cursor-wait disabled:opacity-75"
+                                        className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-5 py-3.5 text-sm font-semibold text-brand-surface shadow-[0_10px_25px_rgba(61,35,21,0.18)] transition hover:bg-brand-ink disabled:cursor-wait disabled:opacity-75"
                                     >
                                         {processing ? "Processando pagamento..." : `Pagar ${formatarPreco(total)}`}
                                         {!processing ? <LockKeyhole size={16} /> : null}
@@ -605,27 +605,27 @@ export default function PaymentModal({ total, items, onClose, onSuccess }) {
 
                         <aside className="space-y-5">
                             {step === "card" ? <CardPreview brand={brand} form={form} /> : (
-                                <div className="flex min-h-[168px] flex-col justify-between rounded-2xl border border-[#8b4513]/12 bg-[linear-gradient(135deg,#eee0d2,#fffaf4)] p-5 text-[#6f513b]">
-                                    <div className="flex items-start justify-between"><CreditCard size={26} /><Sparkles size={18} className="text-[#b97842]" /></div>
-                                    <div><p className="font-mono text-lg tracking-[0.12em]">•••• •••• •••• ••••</p><p className="mt-3 text-xs uppercase tracking-[0.18em] text-[#a0846b]">Seu cartão aparecerá aqui</p></div>
+                                <div className="flex min-h-[168px] flex-col justify-between rounded-2xl border border-brand-border bg-brand-ink p-5 text-brand-text">
+                                    <div className="flex items-start justify-between"><CreditCard size={26} /><Sparkles size={18} className="text-brand-accent" /></div>
+                                    <div><p className="font-mono text-lg tracking-[0.12em]">•••• •••• •••• ••••</p><p className="mt-3 text-xs uppercase tracking-[0.18em] text-brand-muted">Seu cartão aparecerá aqui</p></div>
                                 </div>
                             )}
-                            <div className="rounded-2xl border border-[#8b4513]/12 bg-white/55 p-5">
+                            <div className="rounded-2xl border border-brand-border bg-brand-surface p-5">
                                 <div className="flex items-center justify-between gap-4">
-                                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9b8069]">Resumo do pedido</span>
-                                    <CircleHelp size={16} className="text-[#a0846b]" />
+                                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-muted">Resumo do pedido</span>
+                                    <CircleHelp size={16} className="text-brand-muted" />
                                 </div>
                                 <div className="mt-4 max-h-52 space-y-3 overflow-y-auto pr-2">
                                     {items.map((item) => (
-                                        <div key={item.id} className="flex items-center justify-between gap-4 text-sm text-[#725943]">
+                                        <div key={item.id} className="flex items-center justify-between gap-4 text-sm text-brand-text">
                                             <span className="truncate">{item.quantidade}x {item.nome}</span>
                                             <span className="shrink-0">{formatarPreco(item.preco * item.quantidade)}</span>
                                         </div>
                                     ))}
                                 </div>
-                                <div className="mt-5 flex items-center justify-between border-t border-[#8b4513]/12 pt-4">
-                                    <span className="font-semibold text-[#5b3418]">Total</span>
-                                    <span className="text-xl font-semibold text-[#5b3418]">{formatarPreco(total)}</span>
+                                <div className="mt-5 flex items-center justify-between border-t border-brand-border pt-4">
+                                    <span className="font-semibold text-brand-primary">Total</span>
+                                    <span className="text-xl font-semibold text-brand-primary">{formatarPreco(total)}</span>
                                 </div>
                             </div>
                         </aside>

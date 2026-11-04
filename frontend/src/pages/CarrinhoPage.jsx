@@ -30,23 +30,23 @@ function IconButton({ onClick, label, children, className = "" }) {
 
 function QuantityStepper({ item, onIncrease, onDecrease }) {
     return (
-        <div className="inline-flex items-center rounded-full border border-[#8B4513]/20 bg-white/30">
+        <div className="inline-flex items-center rounded-full border border-brand-border bg-brand-surface">
             {item.quantidade >= 2 ? (
                 <IconButton
                     label={`Remover uma unidade de ${item.nome}`}
                     onClick={onDecrease}
-                    className="h-7 w-7 rounded-full text-[#7A4A2A]/80 hover:text-[#5B3418]"
+                    className="h-7 w-7 rounded-full text-brand-text/80 hover:text-brand-primary"
                 >
                     <Minus size={12} strokeWidth={1.75} aria-hidden="true" />
                 </IconButton>
             ) : null}
-            <span className="min-w-7 px-1 text-center text-sm font-semibold tabular-nums text-[#5B3418]">
+            <span className="min-w-7 px-1 text-center text-sm font-semibold tabular-nums text-brand-primary">
                 {item.quantidade}
             </span>
             <IconButton
                 label={`Adicionar uma unidade de ${item.nome}`}
                 onClick={onIncrease}
-                className="h-7 w-7 rounded-full text-[#7A4A2A]/80 hover:text-[#5B3418]"
+                className="h-7 w-7 rounded-full text-brand-text/80 hover:text-brand-primary"
             >
                 <Plus size={12} strokeWidth={1.75} aria-hidden="true" />
             </IconButton>
@@ -84,23 +84,23 @@ export default function CarrinhoPage() {
         }).format(Number(valor || 0));
 
     return (
-        <main className="min-h-screen px-6 pb-16 pt-28 text-[#6F370F] md:px-10">
+        <main className="min-h-screen px-6 pb-16 pt-28 text-brand-primary md:px-10">
             <div className="mx-auto flex w-full max-w-4xl flex-col gap-10">
                 <div>
-                    <p className="text-sm uppercase tracking-[0.35em] text-[#5B3418]">
+                    <p className="text-sm uppercase tracking-[0.35em] text-brand-primary">
                         Pedido
                     </p>
-                    <h1 className="mt-4 text-4xl font-semibold text-[#5B3418] md:text-5xl">
+                    <h1 className="mt-4 text-4xl font-semibold text-brand-primary md:text-5xl">
                         Carrinho
                     </h1>
                 </div>
 
                 {items.length === 0 ? (
-                    <div className="rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 px-8 py-10 text-center text-[#7A4A2A] transition-all duration-300 hover:border-[#8B4513]/28 hover:bg-[#FAF3E7]/90">
+                    <div className="rounded-3xl border border-brand-border bg-brand-surface px-8 py-10 text-center text-brand-text transition-all duration-300 hover:border-brand-accent hover:bg-brand-surface">
                         <p className="text-base leading-7">Seu carrinho está vazio.</p>
                         <Link
                             to="/homepage#cardapio"
-                            className="mt-4 inline-block font-semibold text-[#8B4513] transition hover:text-[#6F370F]"
+                            className="mt-4 inline-block font-semibold text-brand-primary transition hover:text-brand-primary"
                         >
                             Ver cardápio
                         </Link>
@@ -111,25 +111,25 @@ export default function CarrinhoPage() {
                             {items.map((item) => (
                                 <article
                                     key={item.id}
-                                    className="group flex gap-4 rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 px-4 py-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#8B4513]/28 hover:bg-[#FAF3E7]/90 hover:shadow-[0_18px_60px_rgba(91,52,24,0.14)] md:gap-5 md:px-5"
+                                    className="group flex gap-4 rounded-3xl border border-brand-border bg-brand-surface px-4 py-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-accent hover:bg-brand-surface hover:shadow-[0_18px_60px_rgba(61,35,21,0.14)] md:gap-5 md:px-5"
                                 >
                                     <img
                                         src={obterImagem(item.imagem)}
                                         alt={item.nome}
-                                        className="h-16 w-16 shrink-0 rounded-xl border border-[#8B4513]/12 object-cover transition-all duration-200 group-hover:scale-105 group-hover:border-[#8B4513]/25 md:h-[4.5rem] md:w-[4.5rem]"
+                                        className="h-16 w-16 shrink-0 rounded-xl border border-brand-border object-cover transition-all duration-200 group-hover:scale-105 group-hover:border-brand-accent md:h-[4.5rem] md:w-[4.5rem]"
                                     />
 
                                     <div className="flex min-w-0 flex-1 flex-col justify-center gap-3">
                                         <div className="flex items-start justify-between gap-4">
                                             <div className="min-w-0">
-                                                <h2 className="truncate text-lg font-semibold text-[#5B3418]">
+                                                <h2 className="truncate text-lg font-semibold text-brand-primary">
                                                     {item.nome}
                                                 </h2>
-                                                <p className="mt-1 text-sm leading-6 text-[#7A4A2A]">
+                                                <p className="mt-1 text-sm leading-6 text-brand-text">
                                                     {formatarPreco(item.preco)} por unidade
                                                 </p>
                                             </div>
-                                            <p className="shrink-0 text-lg font-bold text-[#8B4513]">
+                                            <p className="shrink-0 text-lg font-bold text-brand-primary">
                                                 {formatarPreco(item.preco * item.quantidade)}
                                             </p>
                                         </div>
@@ -144,7 +144,7 @@ export default function CarrinhoPage() {
                                             <IconButton
                                                 label={`Excluir ${item.nome} do carrinho`}
                                                 onClick={() => removeItem(item.id)}
-                                                className="h-7 w-7 rounded-full text-[#7A4A2A]/45 hover:text-[#8B4513]"
+                                                className="h-7 w-7 rounded-full text-brand-text/45 hover:text-brand-primary"
                                             >
                                                 <Trash2 size={14} strokeWidth={1.5} aria-hidden="true" />
                                             </IconButton>
@@ -154,11 +154,11 @@ export default function CarrinhoPage() {
                             ))}
                         </div>
 
-                        <div className="mt-4 flex items-center justify-between border-t border-[#8B4513]/15 pt-6">
-                            <span className="text-sm uppercase tracking-[0.35em] text-[#5B3418]">
+                        <div className="mt-4 flex items-center justify-between border-t border-brand-border pt-6">
+                            <span className="text-sm uppercase tracking-[0.35em] text-brand-primary">
                                 Total
                             </span>
-                            <span className="text-xl font-light text-[#5B3418]">
+                            <span className="text-xl font-light text-brand-primary">
                                 {formatarPreco(totalPreco)}
                             </span>
                         </div>
@@ -167,7 +167,7 @@ export default function CarrinhoPage() {
                             <button
                                 type="button"
                                 onClick={iniciarPagamento}
-                                className="rounded-full border border-[#8B4513]/30 bg-[#FAF3E7]/50 px-5 py-2 text-xs font-medium uppercase tracking-[0.32em] text-[#5B3418] transition duration-300 hover:border-[#8B4513]/50 hover:bg-[#FAF3E7]/90"
+                                className="rounded-full border border-brand-border bg-brand-surface px-5 py-2 text-xs font-medium uppercase tracking-[0.32em] text-brand-primary transition duration-300 hover:border-brand-accent hover:bg-brand-surface"
                             >
                                 Pagar
                             </button>
