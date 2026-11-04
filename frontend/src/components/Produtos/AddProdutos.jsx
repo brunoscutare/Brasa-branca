@@ -285,27 +285,27 @@ export default function AddProdutos() {
 
     if (carregando) {
         return (
-            <main className="min-h-screen px-6 pb-10 pt-28 text-[#6F370F] md:px-10">
+            <main className="min-h-screen px-6 pb-10 pt-28 text-brand-primary md:px-10">
                 <div className="mx-auto max-w-7xl">
-                    <p className="text-lg text-[#7A4A2A]">Carregando produto...</p>
+                    <p className="text-lg text-brand-text">Carregando produto...</p>
                 </div>
             </main>
         );
     }
 
-    return (        <main className="min-h-screen px-6 pb-10 pt-28 text-[#6F370F] md:px-10">
+    return (        <main className="min-h-screen px-6 pb-10 pt-28 text-brand-primary md:px-10">
             <Toast toast={toast} onClose={() => setToast(null)} />
 
             <div className="mx-auto max-w-7xl">
                 <div className="mb-10 flex items-start justify-between">
                     <div>
-                        <p className="text-sm uppercase tracking-[0.35em] text-[#5B3418]">
+                        <p className="text-sm uppercase tracking-[0.35em] text-brand-primary">
                             Cardápio
                         </p>
-                        <h1 className="mt-3 text-4xl font-bold text-[#5B3418] md:text-5xl">
+                        <h1 className="mt-3 text-4xl font-bold text-brand-primary md:text-5xl">
                             {editando ? "Editar produto" : "Adicionar produto"}
                         </h1>
-                        <p className="mt-3 max-w-2xl text-base leading-7 text-[#7A4A2A]">
+                        <p className="mt-3 max-w-2xl text-base leading-7 text-brand-text">
                             {editando
                                 ? "Atualize os dados do produto no cardápio."
                                 : "Cadastre novos produtos que serão escolhidos para o cardápio."}
@@ -314,7 +314,7 @@ export default function AddProdutos() {
                         <button
                             type="button"
                             onClick={() => navigate("/produtos")}
-                            className="rounded-xl bg-[#8B4513] px-6 py-3 font-semibold text-[#FAF3E7] shadow-[0_12px_30px_rgba(91,52,24,0.18)] transition hover:bg-[#6F370F]"
+                            className="rounded-xl bg-brand-primary px-6 py-3 font-semibold text-brand-surface shadow-[0_12px_30px_rgba(91,52,24,0.18)] transition hover:bg-brand-primary"
                         >
                             Voltar para produtos
                         </button>
@@ -322,12 +322,12 @@ export default function AddProdutos() {
                 </div>
 
                 <form className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-stretch" onSubmit={handleSubmit} noValidate>
-                    <div className="rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 p-6 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm md:p-8">
+                    <div className="rounded-3xl border border-brand-border bg-brand-surface p-6 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm md:p-8">
                         <div className="mb-6">
-                            <h2 className="text-2xl font-semibold text-[#5B3418]">
+                            <h2 className="text-2xl font-semibold text-brand-primary">
                                 {editando ? "Dados do item" : "Novo item"}
                             </h2>
-                            <p className="mt-2 text-sm text-[#7A4A2A]">
+                            <p className="mt-2 text-sm text-brand-text">
                                 {editando
                                     ? "Revise e salve as alterações do produto."
                                     : "Preencha os dados do produto para salvar no banco."}
@@ -373,13 +373,13 @@ export default function AddProdutos() {
                             />
 
                             <div className="grid grid-cols-2 gap-3">
-                                <label className="flex min-w-0 items-center gap-3 rounded-2xl border border-[#8B4513]/20 bg-[#FAF3E7] px-4 py-3 text-[#5B3418]">
+                                <label className="flex min-w-0 items-center gap-3 rounded-2xl border border-brand-border bg-brand-surface px-4 py-3 text-brand-primary">
                                     <input
                                         name="sobremesa"
                                         type="checkbox"
                                         checked={form.sobremesa}
                                         onChange={handleChange}
-                                        className="h-4 w-4 shrink-0 accent-[#8B4513]"
+                                        className="h-4 w-4 shrink-0 accent-brand-primary"
                                     />
 
                                     <span className="text-sm font-medium leading-6">
@@ -387,13 +387,13 @@ export default function AddProdutos() {
                                     </span>
                                 </label>
 
-                                <label className="flex min-w-0 items-center gap-3 rounded-2xl border border-[#8B4513]/20 bg-[#FAF3E7] px-4 py-3 text-[#5B3418]">
+                                <label className="flex min-w-0 items-center gap-3 rounded-2xl border border-brand-border bg-brand-surface px-4 py-3 text-brand-primary">
                                     <input
                                         name="exibir_no_cardapio"
                                         type="checkbox"
                                         checked={form.exibir_no_cardapio}
                                         onChange={handleChange}
-                                        className="h-4 w-4 shrink-0 accent-[#8B4513]"
+                                        className="h-4 w-4 shrink-0 accent-brand-primary"
                                     />
 
                                     <span className="text-sm font-medium leading-6">
@@ -405,18 +405,18 @@ export default function AddProdutos() {
                             <button
                                 type="submit"
                                 disabled={salvando}
-                                className="w-full rounded-xl bg-[#8B4513] px-6 py-3 font-semibold text-[#FAF3E7] shadow-[0_12px_30px_rgba(91,52,24,0.18)] transition hover:bg-[#6F370F] disabled:cursor-not-allowed disabled:opacity-60"
+                                className="w-full rounded-xl bg-brand-primary px-6 py-3 font-semibold text-brand-surface shadow-[0_12px_30px_rgba(91,52,24,0.18)] transition hover:bg-brand-primary disabled:cursor-not-allowed disabled:opacity-60"
                             >
                                 {salvando ? "Salvando..." : editando ? "Salvar alterações" : "Salvar Produto"}                            </button>
                         </div>
                     </div>
 
-                    <div className="rounded-3xl border border-[#8B4513]/18 bg-[#FAF3E7]/72 p-6 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm md:p-8">
+                    <div className="rounded-3xl border border-brand-border bg-brand-surface p-6 shadow-[0_18px_60px_rgba(91,52,24,0.14)] backdrop-blur-sm md:p-8">
                         <div className="mb-6">
-                            <h2 className="text-2xl font-semibold text-[#5B3418]">
+                            <h2 className="text-2xl font-semibold text-brand-primary">
                                 Imagem
                             </h2>
-                            <p className="mt-2 text-sm text-[#7A4A2A]">
+                            <p className="mt-2 text-sm text-brand-text">
                                 Área reservada para o upload e pré-visualização.
                             </p>
                         </div>
@@ -458,12 +458,12 @@ export default function AddProdutos() {
                             }}
                             className={`flex min-h-[420px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-5 py-6 text-center transition-colors ${
                                 dragOver
-                                    ? "border-[#8B4513] bg-[#F3E6D5]/80"
+                                    ? "border-brand-border bg-brand-panel"
                                     : erros.imagem
                                       ? "border-red-500 bg-red-50/40"
                                       : imagemPreview
-                                        ? "border-[#8B4513]/30 bg-[#F3E6D5]/50"
-                                        : "border-[#8B4513]/20 bg-[#FAF3E7] hover:bg-[#F3E6D5]/40"
+                                        ? "border-brand-border bg-brand-panel"
+                                        : "border-brand-border bg-brand-surface hover:bg-brand-panel"
                             }`}
                         >
                             {imagemPreview ? (
@@ -471,15 +471,15 @@ export default function AddProdutos() {
                                     <img
                                         src={imagemPreview}
                                         alt="Pré-visualização do produto"
-                                        className="h-56 w-full rounded-xl border border-[#8B4513]/15 object-cover"
+                                        className="h-56 w-full rounded-xl border border-brand-border object-cover"
                                     />
 
                                     <div className="flex w-full items-center justify-between gap-3">
                                         <div className="min-w-0 text-left">
-                                            <p className="truncate text-sm font-medium text-[#5B3418]">
+                                            <p className="truncate text-sm font-medium text-brand-primary">
                                                 {imagemLegenda}
                                             </p>
-                                            <p className="text-xs text-[#8B7B70]">
+                                            <p className="text-xs text-brand-muted">
                                                 Clique para trocar a imagem
                                             </p>
                                         </div>
@@ -490,7 +490,7 @@ export default function AddProdutos() {
                                                 event.stopPropagation();
                                                 limparImagem();
                                             }}
-                                            className="rounded-full border border-[#8B4513]/20 p-2 text-[#8B4513] transition hover:bg-[#F3E6D5]"
+                                            className="rounded-full border border-brand-border p-2 text-brand-primary transition hover:bg-brand-panel"
                                             aria-label="Remover imagem"
                                         >
                                             <X size={16} />
@@ -499,13 +499,13 @@ export default function AddProdutos() {
                                 </div>
                             ) : (
                                 <>
-                                    <Image size={42} className="mb-4 text-[#8B7B70]" />
+                                    <Image size={42} className="mb-4 text-brand-muted" />
 
-                                    <p className="text-lg font-semibold text-[#5B3418]">
+                                    <p className="text-lg font-semibold text-brand-primary">
                                         Clique ou arraste uma imagem
                                     </p>
 
-                                    <p className="mt-2 text-sm text-[#8B7B70]">
+                                    <p className="mt-2 text-sm text-brand-muted">
                                         JPG, PNG ou WEBP, até 8MB
                                     </p>
 
@@ -515,7 +515,7 @@ export default function AddProdutos() {
                                             event.stopPropagation();
                                             imagemInputRef.current?.click();
                                         }}
-                                        className="mt-8 inline-flex items-center gap-2 rounded-xl border border-[#8B4513]/20 bg-[#FAF3E7] px-6 py-3 font-semibold text-[#5B3418] transition hover:bg-[#F3E6D5]"
+                                        className="mt-8 inline-flex items-center gap-2 rounded-xl border border-brand-border bg-brand-surface px-6 py-3 font-semibold text-brand-primary transition hover:bg-brand-panel"
                                     >
                                         <Upload size={16} />
                                         Anexar imagem
